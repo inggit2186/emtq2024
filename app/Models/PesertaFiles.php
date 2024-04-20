@@ -7,22 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class PesertaFiles extends Model
 {
-    protected $table = 'peserta_berkas';
+    protected $table = 'peserta_files';
 
     protected $fillable = [
 		'user_id',
-        'foto',
-        'kk',
-        'ktp',
-        'akta',
-        'ijazah',
-        'sertifikat',
-        'tambahan',
+        'files_id',
+		'filename',
+		'status',
+		'keterangan',
         'created_at',
         'updated_at',
     ];
 	
 	public function users(){
-        return $this->belongsTo(Layanan::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

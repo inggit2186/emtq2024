@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Syarat extends Model
+class MTQFiles extends Model
 {
-    protected $table = 'ktd_syarat';
+    protected $table = 'mtq_files';
 
     protected $fillable = [
-		'layanan_id',
-        'syarat'
+		'id',
+        'nama',
+		'wajib',
+		'created_at',
+		'updated_at'
     ];
 	
 	public function sLayanan(){
-        return $this->belongsTo(Layanan::class, 'layanan_id', 'id');
+        return $this->hasMany(PesertaFiles::class, 'files_id', 'id');
     }
 }

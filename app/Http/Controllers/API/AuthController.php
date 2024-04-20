@@ -7,7 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\CMTQ;
+use App\Models\GMTQ;
+use App\Models\MTQFiles;
+use App\Models\PesertaFiles;
 use Auth;
 use Carbon\Carbon;
 
@@ -146,7 +151,37 @@ class AuthController extends Controller
 	}
 	
 	public function reqPeserta(Request $req){
-		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => $req->id])->get();
+		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => $req->id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
+		
+		$peserta = $peserta->map(function($f){
+			$random = Str::random(20);
+			$random2 = Str::random(20);
+			
+			if($f->pp() == 'NONE'){
+				$pp = asset('uploads/BerkasPeserta').'/defaultpp.png?t='.$random;
+			}else{
+				$pp = asset('uploads/BerkasPeserta').'/'.$f->id.'/'.$f->pp().'?t='.$random;
+			}
+			
+			$map = [
+				'pp' => $pp,
+				'id' => $f->id,
+				'name' => $f->name,
+				'nik' => "$f->nomor_induk",
+				'tempat_lahir' => $f->tempat_lahir,
+				'tanggal_lahir' => Carbon::parse($f->tanggal_lahir)->translatedFormat('d F Y'),
+				'umur' => $f->umur(),
+				'cabang' => $f->cmtq->kategori ?? '-',
+				'golongan' => $f->gmtq->golongan ?? '-',
+				'jk' => $f->jk,
+				'teamstatus' => $f->gmtq->team,
+				'team' => $f->team,
+				'status' => $f->status,
+				'update' => Carbon::parse($f->updated_at)->translatedFormat('d F Y H:i'),
+			];
+			return $map;
+		});
+		
 		
 		return response()->json([
 				'success' => true,
@@ -195,8 +230,47 @@ class AuthController extends Controller
 		
 		if(!$user){
 			$cekemail = User::where('email',$request->email)->first();
+			$berkas = MTQFiles::all();
 			
 			if(!$cekemail){
+				$kuota = GMTQ::findOrfail($request->gid);
+				
+				if($request->jk == 'Putra'){
+					$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putra'])->count();
+					if($kuota->team == 0){
+						if($utusan >= $kuota->max_p){
+							return response()->json([
+								'success' => false,
+								'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+							]);
+						}
+					}else{
+						if($utusan >= $request->team*($kuota->max_p / $kuota->team)){
+							return response()->json([
+								'success' => false,
+								'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+							]);
+						}
+					}
+				}else{
+					$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putri'])->count();
+					if($kuota->team == 0){
+						if($utusan >= $kuota->max_w){
+							return response()->json([
+								'success' => false,
+								'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+							]);
+						}
+					}else{
+						if($utusan >= $request->team*($kuota->max_w / $kuota->team)){
+							return response()->json([
+								'success' => false,
+								'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+							]);
+						}
+					}
+				}
+				
 				$save = User::create([
 					'name' => $request->nama,
 					'email' => $request->email,
@@ -210,11 +284,25 @@ class AuthController extends Controller
 					'pekerjaan' => $request->pekerjaan,
 					'satker' => $request->satker,
 					'alamat' => $request->alamat,
-					'role' => 'PESERTA',
+					'role' => 'Peserta',
 					'kontingen_id' => Auth::user()->kontingen_id,
-					'golongan_id' => '99',
-					'kategori_id' => '99',
+					'golongan_id' => $request->cid,
+					'kategori_id' => $request->gid,
+					'team' => $request->team,
+					'status' => 1,
 				]);
+				
+				$cekuser = User::where('nomor_induk',$request->nik)->first();
+				
+				foreach($berkas as $berkas){
+					PesertaFiles::create([
+						'user_id' => $cekuser->id,
+						'files_id' => $berkas->id,
+						'filename' => 'NONE',
+						'status' => 0,
+						'keterangan' => 'Silahkan Upload Disini',
+					]);
+				}
 				
 				return response()->json([
 					'success' => true,
@@ -223,7 +311,7 @@ class AuthController extends Controller
 			}else{
 				return response()->json([
 					'success' => false,
-					'message' => 'Email sudah pernah Didaftarkan',
+					'message' => '<hr/>Email sudah pernah Didaftarkan',
 			   ]);
 			}
 		}else{

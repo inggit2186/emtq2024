@@ -32,13 +32,17 @@ Route::group(['prefix' => '/v1'], function () {
 	Route::get('/cekAuth', [AuthController::class, 'cekAuth']);
     Route::post('/refresh',  [AuthController::class, 'refresh']);
 	Route::get('/getCabang', [PesertaController::class, 'getCabang']);
-	Route::get('/cabangMTQ/{id}', [PesertaController::class, 'cabangMTQ']);
+	Route::get('/getKategori', [PesertaController::class, 'getKategori']);
+	Route::get('/cabangMTQ/info/{id}', [PesertaController::class, 'cabangMTQ']);
 	Route::get('/pesertaMTQ/{id}', [PesertaController::class, 'pesertaMTQ']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
+		Route::get('/cabangMTQ/reg/{id}', [PesertaController::class, 'cabangMTQ']);
 		Route::post('/regpeserta', [AuthController::class, 'reqPeserta']);
 		Route::post('/savePeserta', [AuthController::class, 'savePeserta']);
-        Route::get('/tanggapan/pengaduan/{id}', [TanggapanController::class, 'index']); //spesific tanggapan
+		Route::get('/getBerkas/{id}', [PesertaController::class, 'getBerkas']);
+		Route::post('/uploadSyarat', [PesertaController::class, 'uploadSyarat']);
+		Route::post('/deleteSyarat', [PesertaController::class, 'deleteSyarat']);
         // logout
         Route::post('/logout', [AuthController::class, 'logout']);
     });
