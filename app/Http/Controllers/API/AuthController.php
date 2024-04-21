@@ -163,6 +163,7 @@ class AuthController extends Controller
 				$pp = asset('uploads/BerkasPeserta').'/'.$f->id.'/'.$f->pp().'?t='.$random;
 			}
 			
+			$update = $f->peserta->updated_at ?? $f->update_at;
 			$map = [
 				'pp' => $pp,
 				'id' => $f->id,
@@ -176,12 +177,11 @@ class AuthController extends Controller
 				'jk' => $f->jk,
 				'teamstatus' => $f->gmtq->team,
 				'team' => $f->team,
-				'status' => $f->status,
-				'update' => Carbon::parse($f->updated_at)->translatedFormat('d F Y H:i'),
+				'status' => $f->peserta->status ?? 1,
+				'update' => Carbon::parse($update)->translatedFormat('d F Y H:i'),
 			];
 			return $map;
 		});
-		
 		
 		return response()->json([
 				'success' => true,
@@ -289,7 +289,6 @@ class AuthController extends Controller
 					'golongan_id' => $request->cid,
 					'kategori_id' => $request->gid,
 					'team' => $request->team,
-					'status' => 1,
 				]);
 				
 				$cekuser = User::where('nomor_induk',$request->nik)->first();

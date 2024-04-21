@@ -13,8 +13,6 @@ class PesertaFiles extends Model
 		'user_id',
         'files_id',
 		'filename',
-		'status',
-		'keterangan',
         'created_at',
         'updated_at',
     ];

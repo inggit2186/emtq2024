@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Peserta;
 use App\Models\MTQFiles;
 use App\Models\PesertaFiles;
+use App\Models\Komentar;
 use App\Models\NoPeserta;
 use App\Models\NoLoot;
 use App\Models\Bidang;
@@ -63,8 +64,12 @@ class PesertaController extends Controller
 				$jmlp = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'kontingen_id' => $kontingen, 'jk' => 'Putra'])->count();
 				$jmlw = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'kontingen_id' => $kontingen, 'jk' => 'Putri'])->count();
 			}else{
-				$jmlp = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'jk' => 'Putra'])->count();
-				$jmlw = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'jk' => 'Putri'])->count();
+				$jmlp = Peserta::where(['kategori_id' => $id,'jk' => 'Putra'])->where(function ($query){
+						$query->where('status',3)->orWhere('status',5);
+					})->count();
+				$jmlw = Peserta::where(['kategori_id' => $id,'jk' => 'Putri'])->where(function ($query){
+						$query->where('status',3)->orWhere('status',5);
+					})->count();
 			}
 			
 			if($f->team > 0){
@@ -100,7 +105,9 @@ class PesertaController extends Controller
 	}
 	
 	public function pesertaMTQ($id){
-		$peserta = User::where(['role' => 'Peserta', 'kategori_id' => $id])->orderBy('jk','ASC')->orderBy('team','ASC')->get();
+		$peserta = Peserta::where('kategori_id',$id)->where(function ($query){
+					$query->where('status',3)->orWhere('status',5);
+				})->orderBy('jk','ASC')->orderBy('team','ASC')->get();
 		
 		$peserta = $peserta->map(function($f){
 			$random = Str::random(20);
@@ -125,7 +132,7 @@ class PesertaController extends Controller
 				'jk' => $f->jk,
 				'teamstatus' => $f->gmtq->team,
 				'team' => $f->team,
-				'status' => $f->status,
+				'status' => $f->peserta->status ?? 1,
 				'update' => Carbon::parse($f->updated_at)->translatedFormat('d F Y H:i'),
 			];
 			return $map;
@@ -148,51 +155,80 @@ class PesertaController extends Controller
 		
 		$peserta = User::where('id',$id)->first();
 		
-		if($peserta->pp() == 'NONE'){
-			$peserta->pp = asset('uploads/BerkasPeserta').'/defaultpp.png?t='.$random;
-		}else{
-			$peserta->pp = asset('uploads/BerkasPeserta').'/'.$peserta->id.'/'.$peserta->pp().'?t='.$random;
-		}
-		
-		$peserta->nik = "$peserta->nomor_induk";
-		$peserta->umur = $peserta->umur();
-		$peserta->kontingenx = $peserta->kontingen->kontingen;
-		$peserta->tanggallahir = Carbon::parse($peserta->tanggal_lahir)->translatedFormat('d F Y');
-		$peserta->cabang = $peserta->cmtq->kategori ?? '-';
-		$peserta->kategori = $peserta->gmtq->golongan ?? '-';
-		
-		$syarat = PesertaFiles::where(['user_id' => $id])->join('mtq_files', function($join)
-			{
-				$join->on('peserta_files.files_id', '=', 'mtq_files.id');
-			})->get();
-		
-		$syarat = $syarat->map(function($f){
+		if($peserta->kontingen_id == Auth::user()->kontingen_id){
+			if($peserta->pp() == 'NONE'){
+				$peserta->pp = asset('uploads/BerkasPeserta').'/defaultpp.png?t='.$random;
+			}else{
+				$peserta->pp = asset('uploads/BerkasPeserta').'/'.$peserta->id.'/'.$peserta->pp().'?t='.$random;
+			}
+			
+			$peserta->nik = "$peserta->nomor_induk";
+			$peserta->telp = preg_replace('/(?<=\d)(?=(\d{4})+$)/', ' ', $peserta->telp);
+			$peserta->umur = $peserta->umur();
+			$peserta->status = $peserta->peserta->status ?? 1;
+			$peserta->kontingenx = $peserta->kontingen->kontingen;
+			$peserta->tanggallahir = Carbon::parse($peserta->tanggal_lahir)->translatedFormat('d F Y');
+			$peserta->cabang = $peserta->cmtq->kategori ?? '-';
+			$peserta->kategori = $peserta->gmtq->golongan ?? '-';
+			
+			$komen = Komentar::where(['to_user' => $id])->orderBy('created_at','ASC')->get();
+			$komen = $komen->map(function($f){
 				
-				$random = Str::random(20);
-		
-				if($f->filename != 'NONE'){
-					$path = asset('uploads/BerkasPeserta').'/'.$f->user_id.'/'.$f->filename.'?t='.$random;
+				if($f->user_id == Auth::user()->id){
+					$sender = $f->user->name;
+					$st = 'user';
 				}else{
-					$path = 'NONE';
+					$sender = $f->user->pekerjaan;
+					$st = 'petugas';
 				}
 				
 				$map = [
-					'id' => $f->files_id,
-					'nama' => $f->nama,
-					'status' => $f->status,
-					'wajib' => $f->wajib,
-					'keterangan' => $f->keterangan,
-					'fileUrl' => $path,
-					'filename' => $f->filename,
+					'id' => $f->id,
+					'sender' => $sender,
+					'st' => $st,
+					'komen' => $f->komentar,
+					'waktu' => $f->created_at->diffForHumans()
 				];
 				return $map;
 			});
-		
-		return response()->json([
-				'success' => true,
-				'data' => $peserta,
-				'syarat' => $syarat,
-		   ]);
+			
+			$syarat = PesertaFiles::where(['user_id' => $id])->join('mtq_files', function($join)
+				{
+					$join->on('peserta_files.files_id', '=', 'mtq_files.id');
+				})->get();
+			
+			$syarat = $syarat->map(function($f){
+					
+					$random = Str::random(20);
+			
+					if($f->filename != 'NONE'){
+						$path = asset('uploads/BerkasPeserta').'/'.$f->user_id.'/'.$f->filename.'?t='.$random;
+					}else{
+						$path = 'NONE';
+					}
+					
+					$map = [
+						'id' => $f->files_id,
+						'nama' => $f->nama,
+						'wajib' => $f->wajib,
+						'fileUrl' => $path,
+						'filename' => $f->filename,
+					];
+					return $map;
+				});
+			
+			return response()->json([
+					'success' => true,
+					'data' => $peserta,
+					'syarat' => $syarat,
+					'komen' => $komen,
+			   ]);
+		}else{
+			return response()->json([
+					'success' => false,
+					'message' => 'Anda Tidak Memiliki Hak Akses ke Bagian Ini',
+			   ]);
+		}
 	}
 	
 	public function uploadSyarat(Request $req){
@@ -303,5 +339,74 @@ class PesertaController extends Controller
 				'message' => 'File Berhasil Dihapus!!',
 				'syarat' => $syarat,
 		   ]);
+	}
+	
+	public function updatePeserta(Request $req){
+		$peserta = User::where('id',$req->userid)->first();
+		
+		if($peserta->kontingen_id == Auth::user()->kontingen_id){
+			if($req->statusx == 'new'){
+				Peserta::updateOrCreate([
+					'user_id'   => $peserta->id,
+				],[
+					'jk' => $peserta->jk,
+					'team' => $peserta->team,
+					'kategori_id' => $peserta->kategori_id,
+					'golongan_id' => $peserta->golongan_id,
+					'status' => 2
+				]);
+				return response()->json([
+					'success' => true,
+					'message' => 'Data & Dokumen Peserta Berhasil Diajukan',
+			   ]);
+			}else if($req->statusx == 'batal'){
+				Peserta::where('user_id',$peserta->id)->delete();
+				
+				return response()->json([
+					'success' => true,
+					'message' => 'Data & Dokumen Peserta Dibatalkan diajukan',
+			   ]);
+			}
+		}else{
+			return response()->json([
+					'success' => false,
+					'message' => 'Anda Tidak Memiliki Hak Akses ke Bagian Ini',
+			   ]);
+		}
+	}
+	
+	function addKomen(Request $req){
+		$addkomen = Komentar::create([
+			'user_id' => Auth::user()->id,
+			'komentar' => $req->komen,
+			'to_user' => $req->userid
+		]);
+		
+		$komen = Komentar::where(['to_user' => $req->userid])->orderBy('created_at','ASC')->get();
+			$komen = $komen->map(function($f){
+				
+				if($f->user_id == Auth::user()->id){
+					$sender = $f->user->name;
+					$st = 'user';
+				}else{
+					$sender = $f->user->pekerjaan;
+					$st = 'petugas';
+				}
+				
+				$map = [
+					'id' => $f->id,
+					'sender' => $sender,
+					'st' => $st,
+					'komen' => $f->komentar,
+					'waktu' => $f->created_at->diffForHumans()
+				];
+				return $map;
+			});
+			
+		return response()->json([
+				'success' => true,
+				'message' => 'Komentar berhasil ditambahkan!',
+				'komen' => $komen
+			]);
 	}
 }

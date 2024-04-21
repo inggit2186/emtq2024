@@ -25,9 +25,12 @@ class User extends Authenticatable
 	public function files(){
 		return $this->hasMany(PesertaFiles::class, 'user_id', 'id');
 	}
+	public function peserta(){
+		return $this->hasOne(Peserta::class, 'user_id', 'id');
+	}
 	public function umur(){
 		return Carbon::parse($this->tanggal_lahir)->diff(Carbon::now())
-			 ->format('%y tahun, %m bulan and %d hari');
+			 ->format('%y tahun, %m bulan dan %d hari');
 	}
 	public function pp(){
 		return PesertaFiles::where(['user_id' => $this->id, 'files_id' => 1])->pluck('filename')->first();
@@ -58,7 +61,6 @@ class User extends Authenticatable
 		'golongan_id',
 		'kategori_id',
 		'team',
-		'status',
     ];
 
     /**

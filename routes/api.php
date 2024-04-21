@@ -41,8 +41,10 @@ Route::group(['prefix' => '/v1'], function () {
 		Route::post('/regpeserta', [AuthController::class, 'reqPeserta']);
 		Route::post('/savePeserta', [AuthController::class, 'savePeserta']);
 		Route::get('/getBerkas/{id}', [PesertaController::class, 'getBerkas']);
+		Route::post('/updatePeserta', [PesertaController::class, 'updatePeserta']);
 		Route::post('/uploadSyarat', [PesertaController::class, 'uploadSyarat']);
 		Route::post('/deleteSyarat', [PesertaController::class, 'deleteSyarat']);
+		Route::post('/addKomen', [PesertaController::class, 'addKomen']);
         // logout
         Route::post('/logout', [AuthController::class, 'logout']);
     });
