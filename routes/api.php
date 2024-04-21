@@ -38,6 +38,7 @@ Route::group(['prefix' => '/v1'], function () {
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::get('/getpeserta/{id}', [PesertaController::class, 'getPeserta']);
+		Route::get('/getkontingen', [PesertaController::class, 'getKontingen']);
 		Route::post('/deletepeserta', [PesertaController::class, 'deletePeserta']);
 		Route::get('/cabangMTQ/reg/{id}', [PesertaController::class, 'cabangMTQ']);
 		Route::post('/regpeserta', [AuthController::class, 'reqPeserta']);
@@ -47,6 +48,9 @@ Route::group(['prefix' => '/v1'], function () {
 		Route::post('/uploadSyarat', [PesertaController::class, 'uploadSyarat']);
 		Route::post('/deleteSyarat', [PesertaController::class, 'deleteSyarat']);
 		Route::post('/addKomen', [PesertaController::class, 'addKomen']);
+		//cpanel
+		Route::post('/updateStatus', [PesertaController::class, 'updateStatus']);
+		Route::post('/disqualify', [PesertaController::class, 'disqualify']);
         // logout
         Route::post('/logout', [AuthController::class, 'logout']);
     });

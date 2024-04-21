@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\CMTQ;
 use App\Models\GMTQ;
+use App\Models\Kontingen;
 use App\Models\Nilai;
 use App\Models\User;
 use App\Models\Peserta;
@@ -149,13 +150,35 @@ class PesertaController extends Controller
 			]);
 	}
 	
+	public function getKontingen(){
+		$kontingen = Kontingen::all();
+		$kontingen = $kontingen->map(function($f){
+			
+			$jmlp = User::where(['kontingen_id' => $f->id,'jk' => 'Putra'])->count();
+			$jmlw = User::where(['kontingen_id' => $f->id,'jk' => 'Putri'])->count();
+			
+			$map = [
+				'id' => $f->id,
+				'kontingen' => $f->kontingen,
+				'jmlp'  => $jmlp,
+				'jmlw'  => $jmlw,
+			];
+			return $map;
+		});
+		
+		return response()->json([
+				'success' => true,
+				'data' => $kontingen,
+			]);
+	}
+	
 	public function getBerkas($id){
 		$random = Str::random(20);
 		$random2 = Str::random(20);
 		
 		$peserta = User::where('id',$id)->first();
 		
-		if($peserta->kontingen_id == Auth::user()->kontingen_id){
+		if($peserta->kontingen_id == Auth::user()->kontingen_id || Auth::user()->role == 'Petugas' || Auth::user()->role == 'Admin'){
 			if($peserta->pp() == 'NONE'){
 				$peserta->pp = asset('uploads/BerkasPeserta').'/defaultpp.png?t='.$random;
 			}else{
@@ -178,6 +201,7 @@ class PesertaController extends Controller
 			$peserta->kategori = $peserta->gmtq->golongan ?? '-';
 			$peserta->teamstatus = $teamstatus ?? 'personal';
 			$peserta->maxteam = $peserta->gmtq->team ?? '0';
+			$peserta->userrole = Auth::user()->role;
 			
 			$komen = Komentar::where(['to_user' => $id])->orderBy('created_at','ASC')->get();
 			$komen = $komen->map(function($f){
@@ -186,7 +210,7 @@ class PesertaController extends Controller
 					$sender = $f->user->name;
 					$st = 'user';
 				}else{
-					$sender = $f->user->pekerjaan;
+					$sender = $f->user->name;
 					$st = 'petugas';
 				}
 				
@@ -479,5 +503,63 @@ class PesertaController extends Controller
 				'message' => 'Komentar berhasil ditambahkan!',
 				'komen' => $komen
 			]);
+	}
+	
+	public function updateStatus(Request $req) {
+		
+		if(Auth::user()->role == 'Petugas' || Auth::user()->role == 'Admin'){
+				Peserta::where('user_id',$req->userid)->update([
+					'status' => $req->status,
+					'verifikator' => Auth::user()->id,
+					'keterangan' => $req->komen
+				]);
+				
+				if($req->status == 4){
+					$addkomen = Komentar::create([
+						'user_id' => Auth::user()->id,
+						'komentar' => '•(DOKUMEN DITOLAK)•  '.$req->komen,
+						'to_user' => $req->userid
+					]);
+				}
+				
+				return response()->json([
+					'success' => true,
+					'message' => 'Data Peserta berhasil diUpdate!!',
+			   ]);
+			
+		}else{
+			return response()->json([
+					'success' => false,
+					'message' => 'Anda Tidak Memiliki Hak Akses ke Bagian Ini',
+			   ]);
+		}
+	}
+	
+	public function disqualify(Request $req) {
+		
+		if(Auth::user()->role == 'Petugas' || Auth::user()->role == 'Admin'){
+				Peserta::where('user_id',$req->userid)->update([
+					'status' => 5,
+					'verifikator' => Auth::user()->id,
+					'keterangan' => $req->alasan
+				]);
+				
+				$addkomen = Komentar::create([
+					'user_id' => Auth::user()->id,
+					'komentar' => '•(PESERTA DIDISKUALIFIKASI)•  '.$req->alasan,
+					'to_user' => $req->userid
+				]);
+				
+				return response()->json([
+					'success' => true,
+					'message' => 'Peserta Didiskualifikasi!!',
+			   ]);
+			
+		}else{
+			return response()->json([
+					'success' => false,
+					'message' => 'Anda Tidak Memiliki Hak Akses ke Bagian Ini',
+			   ]);
+		}
 	}
 }

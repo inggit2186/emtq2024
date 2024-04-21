@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2024 at 07:58 AM
+-- Generation Time: Apr 21, 2024 at 01:38 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -1389,6 +1389,13 @@ CREATE TABLE `komentar` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `komentar`
+--
+
+INSERT INTO `komentar` (`id`, `user_id`, `komentar`, `to_user`, `created_at`, `updated_at`) VALUES
+(23, 1, '•(DOKUMEN DITOLAK)•  KTP salah upload', 33, '2024-04-21 11:20:32', '2024-04-21 11:20:32');
 
 -- --------------------------------------------------------
 
@@ -6080,7 +6087,7 @@ CREATE TABLE `mtq_peserta` (
 --
 
 INSERT INTO `mtq_peserta` (`id`, `user_id`, `jk`, `team`, `nomor`, `kategori_id`, `golongan_id`, `total`, `promotor`, `verifikator`, `operator`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
-(11, 33, 'Putra', 1, '', 1, 1, 0, 2, '2', '', 2, 'salah upload file', '2024-04-21 12:20:24', '2024-04-21 12:56:01'),
+(11, 33, 'Putra', 1, '', 1, 1, 0, 2, '1', '', 4, 'KTP salah upload', '2024-04-21 12:20:24', '2024-04-21 18:20:32'),
 (12, 34, 'Putri', 1, '', 1, 1, 0, 2, NULL, '', 2, NULL, '2024-04-21 12:21:18', '2024-04-21 12:21:18');
 
 -- --------------------------------------------------------
@@ -6387,9 +6394,15 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (24, 'App\\Models\\User', 2, 'auth_token', '49c7f9ffde0af782cae45f4532d2608c36a0619c4e88ae63dea18602fb875bd6', '[\"*\"]', '2024-04-19 09:35:07', '2024-04-19 09:17:56', '2024-04-19 09:35:07'),
 (25, 'App\\Models\\User', 2, 'auth_token', '972249bd351f053d7a7b585c9b9ac4534fae27ab0b4c86b73f44915c1b05d0dd', '[\"*\"]', '2024-04-20 13:26:40', '2024-04-19 22:49:15', '2024-04-20 13:26:40'),
 (26, 'App\\Models\\User', 2, 'auth_token', 'db59b9dda937b5a32ab588741f503a219a997d8cf5940ee8852d3030de1c0974', '[\"*\"]', '2024-04-21 05:52:21', '2024-04-20 03:34:05', '2024-04-21 05:52:21'),
-(27, 'App\\Models\\User', 2, 'auth_token', '9df009475482bdc0dffb36c78703de8ed5ded2d3f9588310c8861f4b8816ab40', '[\"*\"]', '2024-04-21 04:59:15', '2024-04-20 13:19:05', '2024-04-21 04:59:15'),
+(27, 'App\\Models\\User', 2, 'auth_token', '9df009475482bdc0dffb36c78703de8ed5ded2d3f9588310c8861f4b8816ab40', '[\"*\"]', '2024-04-21 08:56:16', '2024-04-20 13:19:05', '2024-04-21 08:56:16'),
 (28, 'App\\Models\\User', 2, 'auth_token', '0f8f3d12f808f085b33d2d8ed5472c33b094e39b92d1aeee8f3e8d6762aeeae1', '[\"*\"]', '2024-04-21 04:50:40', '2024-04-20 13:34:46', '2024-04-21 04:50:40'),
-(29, 'App\\Models\\User', 2, 'auth_token', '94d7a734b69a0dd5afdf56f78249c046297815b858ca3317ec0cb7b25caf6650', '[\"*\"]', '2024-04-21 05:56:29', '2024-04-21 04:51:03', '2024-04-21 05:56:29');
+(30, 'App\\Models\\User', 1, 'auth_token', '4b00bbdebbaf6d2170a7c9daf0b26821fcd050cd8b492c4e97aed59b9ba4baa8', '[\"*\"]', NULL, '2024-04-21 08:56:48', '2024-04-21 08:56:48'),
+(31, 'App\\Models\\User', 1, 'auth_token', '78ab15c9970110b9f54d68cd39118455c6f1b63b9dcc359e617c7ca9b04665f4', '[\"*\"]', NULL, '2024-04-21 08:56:51', '2024-04-21 08:56:51'),
+(32, 'App\\Models\\User', 1, 'auth_token', 'f692fdbe916fb9ea662300aede59eef71a99b2f4158f88b70d60757ad4d8a5f9', '[\"*\"]', NULL, '2024-04-21 08:57:06', '2024-04-21 08:57:06'),
+(33, 'App\\Models\\User', 1, 'auth_token', 'ad1c788a726c2eaf0194c852fdb513a7043b8306b6d85be620a28c2f8eb4aa6c', '[\"*\"]', NULL, '2024-04-21 08:57:45', '2024-04-21 08:57:45'),
+(34, 'App\\Models\\User', 1, 'auth_token', '86b625e26685242a89d6f96d56e91de401cf7b06a81c090dc8adf9af98a52b42', '[\"*\"]', '2024-04-21 09:04:43', '2024-04-21 08:58:08', '2024-04-21 09:04:43'),
+(37, 'App\\Models\\User', 1, 'auth_token', 'dfdf9e22562c975c4b23e43a2ecddd4145460fdd1856b072f792cb2fc0b6f993', '[\"*\"]', '2024-04-21 09:30:14', '2024-04-21 09:29:17', '2024-04-21 09:30:14'),
+(39, 'App\\Models\\User', 1, 'auth_token', '8e4d1240f549069f33f02c7cf5d9845d3e6ba19c42e1210754ab0295b5a4d84c', '[\"*\"]', '2024-04-21 11:24:08', '2024-04-21 10:23:10', '2024-04-21 11:24:08');
 
 -- --------------------------------------------------------
 
@@ -6477,6 +6490,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `nomor_induk`, `kk`, `tempat_lahir`, `tanggal_lahir`, `jk`, `telp`, `pekerjaan`, `satker`, `alamat`, `created_at`, `updated_at`, `role`, `dept_id`, `kontingen_id`, `golongan_id`, `kategori_id`, `team`) VALUES
+(1, 'Admin', 'admin@gmail.com', '$2y$10$L2ogNwQnpR7rfmwULgG08Of0QD4zJPBt85bWebQEtXJgt0nSW3am2', 1006240, 1006240, 'Batusangkar', '1971-01-01', 'Putra', 89623965916, 'Admin', 'Kankemenag', 'Kankemenag', NULL, NULL, 'Petugas', 1, 1, 9999, 9999, 1),
 (2, 'RIDHO SAPUTRA S.Kom', 'gekikara01@gmail.com', '$2y$10$L2ogNwQnpR7rfmwULgG08Of0QD4zJPBt85bWebQEtXJgt0nSW3am2', 199201152022031001, 0, '', NULL, 'Putra', 0, 'Admin', NULL, NULL, '2024-04-17 09:30:21', '2024-04-17 09:30:21', 'Official', 4, 20220927105, 9999, 9999, 1),
 (33, 'User01', 'user01@gmail.com', '$2y$10$O9GVIkDEbDmIJTOkaOs0xudgDssXU.DB2bIRInXt1ZffdTa4YRkVS', 1, 2, 'Tanah Datar', '1997-04-12', 'Putra', 89290902244, 'Asisten Ahli', 'KUA Lima Kaum', 'ababaddd', '2024-04-21 05:02:12', '2024-04-21 05:51:21', 'Peserta', 0, 20220927105, 1, 1, 1),
 (34, 'User02', 'user02@gmail.com', '$2y$10$8f87iH0sXgqJuM/NO99.hu6g2iT0kQyVcyKq4.mPLshmqvQ45HN2O', 2, 2, 'Agam', '2024-03-09', 'Putri', 89290902222, 'Asisten Ahli', 'SDN 41 Aur Barulak', 'jln indomo, lima kaum, 27217', '2024-04-21 05:03:55', '2024-04-21 05:03:55', 'Peserta', 0, 20220927105, 1, 1, 1),
@@ -6633,7 +6647,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `komentar`
 --
 ALTER TABLE `komentar`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `migrations`
@@ -6699,7 +6713,7 @@ ALTER TABLE `no_peserta`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `peserta_files`

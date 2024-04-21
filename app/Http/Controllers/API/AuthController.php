@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\CMTQ;
 use App\Models\GMTQ;
+use App\Models\Kontingen;
 use App\Models\MTQFiles;
 use App\Models\PesertaFiles;
 use Auth;
@@ -39,7 +40,7 @@ class AuthController extends Controller
 			$user->noid = "$user->nomor_induk";
 			$user->token = $token;
 			$user->token_type = 'Bearer';
-			$user->kontingen = $user->kontingen->kontingen;
+			$user->kontingen = $user->kontingen->kontingen ?? 'Other';
 		   
 			return response()->json([
 				'success' => true,
@@ -65,7 +66,7 @@ class AuthController extends Controller
 			$user->noid = "$user->nomor_induk";
 			$user->token = $token;
 			$user->token_type = 'Bearer';
-			$user->kontingen = $user->kontingen->kontingen;
+			$user->kontingen = $user->kontingen->kontingen ?? 'Other';
 		   
 			return response()->json([
 				'success' => true,
@@ -115,7 +116,7 @@ class AuthController extends Controller
 			$user->noid = "$user->nomor_induk";
 			$user->token = $token;
 			$user->token_type = 'Bearer';
-			$user->kontingen = $user->kontingen->kontingen;
+			$user->kontingen = $user->kontingen->kontingen ?? 'Other';
 		   
 			return response()->json([
 				'success' => true,
@@ -151,7 +152,8 @@ class AuthController extends Controller
 	}
 	
 	public function reqPeserta(Request $req){
-		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => Auth::user()->kontingen_id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
+		$kontingen = Kontingen::findOrfail($req->id);
+		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => $req->id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
 		
 		$peserta = $peserta->map(function($f){
 			$random = Str::random(20);
@@ -188,6 +190,7 @@ class AuthController extends Controller
 		return response()->json([
 				'success' => true,
 				'data' => $peserta,
+				'kontingen' => $kontingen->kontingen
 		   ]);
 	}
 	
@@ -381,15 +384,19 @@ class AuthController extends Controller
 		}
 	}
 	
-    public function logout()
+    public function logout(Request $request)
     {
-        if(auth()){
-            auth()->logout();
-            return response()->json(
-                [
-                   'success' => 'Logout Berhasil', 
-                   'code' => 200,
-                ],201);
+         if (Auth::user()) {
+				$request->user()->currentAccessToken()->delete();
+				return response()->json([
+				'success' => true,
+				'message' => 'Logout Berhasil.',
+		   ]);
+        } else {
+            return response()->json([
+			'success' => false,
+			'message' => 'Logout Gagal.',
+		   ]);
         }
-    }   
+    } 
 }
