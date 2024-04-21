@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 19, 2024 at 12:01 PM
+-- Generation Time: Apr 21, 2024 at 07:58 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -1378,6 +1378,21 @@ CREATE TABLE `failed_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `komentar`
+--
+
+CREATE TABLE `komentar` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `komentar` text NOT NULL,
+  `to_user` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `migrations`
 --
 
@@ -1440,6 +1455,29 @@ INSERT INTO `mtq_category` (`id`, `kategori`, `penanya`, `created_at`, `updated_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `mtq_files`
+--
+
+CREATE TABLE `mtq_files` (
+  `id` int(25) NOT NULL,
+  `nama` varchar(255) NOT NULL,
+  `wajib` int(25) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `mtq_files`
+--
+
+INSERT INTO `mtq_files` (`id`, `nama`, `wajib`, `created_at`, `updated_at`) VALUES
+(1, 'Foto', 1, '2024-04-20 10:13:25', '2024-04-20 10:13:33'),
+(2, 'KTP', 1, '2024-04-20 10:13:36', '2024-04-20 10:13:38'),
+(3, 'Kartu Keluarga (KK)', 1, '2024-04-20 10:13:40', '2024-04-20 10:13:42');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `mtq_golongan`
 --
 
@@ -1449,6 +1487,9 @@ CREATE TABLE `mtq_golongan` (
   `cmtq_id` int(100) NOT NULL,
   `jml_p` int(100) DEFAULT NULL,
   `jml_w` int(100) DEFAULT NULL,
+  `max_p` int(25) NOT NULL DEFAULT 1,
+  `max_w` int(25) NOT NULL DEFAULT 1,
+  `team` int(25) NOT NULL DEFAULT 0,
   `kode` varchar(100) DEFAULT NULL,
   `min` int(100) DEFAULT NULL,
   `max` int(100) DEFAULT NULL,
@@ -1461,38 +1502,38 @@ CREATE TABLE `mtq_golongan` (
 -- Dumping data for table `mtq_golongan`
 --
 
-INSERT INTO `mtq_golongan` (`id`, `golongan`, `cmtq_id`, `jml_p`, `jml_w`, `kode`, `min`, `max`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 'Tilawah Kanak-kanak', 1, 13, 13, NULL, 401, 426, 124, NULL, '2022-06-18 19:45:52'),
-(2, 'Tilawah Anak-Anak', 1, 14, 14, NULL, 101, 128, 117, NULL, '2022-06-18 19:45:27'),
-(3, 'Tilawah Remaja', 1, 13, 14, NULL, 201, 227, 114, NULL, '2022-06-18 19:44:59'),
-(4, 'Tilawah Dewasa', 1, 14, 13, NULL, 301, 327, 126, NULL, '2022-06-18 19:47:26'),
-(5, 'Tilawah Lansia', 1, 14, 14, NULL, 501, 528, 123, NULL, '2022-06-18 19:49:22'),
-(6, 'Qira\'at Mujawwad Dewasa', 18, 12, 8, 'Q.', 101, 120, 115, NULL, '2022-06-18 19:50:58'),
-(7, 'Qira\'at Muratal Remaja', 2, 9, 11, 'Q.', 201, 220, 116, NULL, '2022-06-18 19:53:34'),
-(8, 'Qira\'at Muratal Dewasa', 2, 12, 14, 'Q.', 301, 326, 115, NULL, '2022-06-18 19:51:56'),
-(9, 'HQ.1 Juz Tilawah', 16, 13, 14, 'HQ.', 101, 127, 120, NULL, '2022-06-18 19:55:17'),
-(10, 'HQ.5 Juz Tilawah', 17, 13, 11, 'HQ.', 201, 224, 120, NULL, '2022-06-18 19:55:43'),
-(11, 'HQ. 1 Juz Non Tilawah', 3, 14, 14, 'HQ.', 301, 328, 112, NULL, '2022-06-18 19:56:07'),
-(12, 'HQ. 5 Juz Non Tilawah', 3, 14, 14, 'HQ.', 401, 428, 112, NULL, '2022-06-18 19:56:25'),
-(13, 'HQ.10 Juz', 3, 13, 12, 'HQ.', 501, 525, 113, NULL, '2022-06-18 19:57:01'),
-(14, 'HQ.Juz 30', 3, 14, 14, 'HQ.', 601, 628, 129, NULL, '2022-06-21 16:27:59'),
-(15, 'Tartil Dasar', 4, 14, 14, 'TT.', 101, 128, 125, NULL, '2022-06-18 19:59:22'),
-(16, 'Tartil Menengah', 4, 14, 14, 'TT.', 201, 228, 122, NULL, '2022-06-18 19:59:39'),
-(17, 'Tartil Umum', 4, 14, 14, 'TT.', 301, 328, 119, NULL, '2022-06-18 19:59:56'),
-(18, 'Tafsir Bahasa Arab', 19, 6, 3, 'TF.', 101, 109, 136, NULL, '2022-06-18 20:02:14'),
-(19, 'Tafsir Bahasa Indonesia', 5, 9, 8, 'TF.', 201, 217, 118, NULL, '2022-06-18 20:02:40'),
-(20, 'Tafsir Bahasa Inggris', 5, 6, 6, 'TF.', 301, 312, 118, NULL, '2022-06-18 20:02:56'),
-(21, 'Khaligrafi Naskah', 6, 11, 11, 'KT.', 101, 122, 138, NULL, '2022-06-18 20:25:09'),
-(22, 'Khaligrafi Mushaf', 6, 13, 12, 'KT.', 201, 225, 138, NULL, '2022-06-18 20:25:15'),
-(23, 'Khaligrafi Dekorasi', 6, 10, 9, 'KT.', 301, 319, 138, NULL, '2022-06-18 20:25:23'),
-(24, 'Khaligrafi Kontemporer', 6, 11, 11, 'KT.', 401, 422, 138, NULL, '2022-06-18 20:25:29'),
-(26, 'Musabaqoh Syarhil Qur\'an (MSQ)', 8, 14, 14, 'SQ.', 1, 28, 131, NULL, '2022-06-18 20:08:32'),
-(27, 'Khutbah Jum\'at dan Adzan', 9, 14, 0, 'KJ.', 1, 14, 132, NULL, '2022-06-18 20:09:41'),
-(29, 'Kitab Standar', 10, 13, 13, 'KS.', 101, 126, 133, NULL, '2022-06-18 20:10:47'),
-(30, 'Karya Tulis Ilmiah Al Qur\'an', 11, 12, 13, 'IQ.', 1, 25, 137, NULL, '2022-06-18 20:25:52'),
-(31, 'Hafalan Hadist/500 Hadist Tanpa Sanad', 12, 6, 6, 'HH.', 201, 212, 111, NULL, '2022-06-21 01:22:27'),
-(32, 'Hafalan Hadist/100 Hadist Dengan Sanad', 13, 6, 6, 'HH.', 101, 112, 121, NULL, '2022-06-21 01:53:55'),
-(33, 'Musabaqoh Fahmil Qur\'an (MFQ)', 7, 14, 14, 'FQ.', 1, 28, 130, NULL, '2022-06-18 20:07:41');
+INSERT INTO `mtq_golongan` (`id`, `golongan`, `cmtq_id`, `jml_p`, `jml_w`, `max_p`, `max_w`, `team`, `kode`, `min`, `max`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 'Tilawah Kanak-kanak', 1, 13, 13, 1, 1, 0, NULL, 401, 426, 124, NULL, '2022-06-18 19:45:52'),
+(2, 'Tilawah Anak-Anak', 1, 14, 14, 4, 4, 2, NULL, 101, 128, 117, NULL, '2022-06-18 19:45:27'),
+(3, 'Tilawah Remaja', 1, 13, 14, 1, 1, 0, NULL, 201, 227, 114, NULL, '2022-06-18 19:44:59'),
+(4, 'Tilawah Dewasa', 1, 14, 13, 1, 1, 0, NULL, 301, 327, 126, NULL, '2022-06-18 19:47:26'),
+(5, 'Tilawah Lansia', 1, 14, 14, 1, 1, 0, NULL, 501, 528, 123, NULL, '2022-06-18 19:49:22'),
+(6, 'Qira\'at Mujawwad Dewasa', 18, 12, 8, 1, 1, 0, 'Q.', 101, 120, 115, NULL, '2022-06-18 19:50:58'),
+(7, 'Qira\'at Muratal Remaja', 2, 9, 11, 1, 1, 0, 'Q.', 201, 220, 116, NULL, '2022-06-18 19:53:34'),
+(8, 'Qira\'at Muratal Dewasa', 2, 12, 14, 1, 1, 0, 'Q.', 301, 326, 115, NULL, '2022-06-18 19:51:56'),
+(9, 'HQ.1 Juz Tilawah', 16, 13, 14, 1, 1, 0, 'HQ.', 101, 127, 120, NULL, '2022-06-18 19:55:17'),
+(10, 'HQ.5 Juz Tilawah', 17, 13, 11, 1, 1, 0, 'HQ.', 201, 224, 120, NULL, '2022-06-18 19:55:43'),
+(11, 'HQ. 1 Juz Non Tilawah', 3, 14, 14, 1, 1, 0, 'HQ.', 301, 328, 112, NULL, '2022-06-18 19:56:07'),
+(12, 'HQ. 5 Juz Non Tilawah', 3, 14, 14, 1, 1, 0, 'HQ.', 401, 428, 112, NULL, '2022-06-18 19:56:25'),
+(13, 'HQ.10 Juz', 3, 13, 12, 1, 1, 0, 'HQ.', 501, 525, 113, NULL, '2022-06-18 19:57:01'),
+(14, 'HQ.Juz 30', 3, 14, 14, 1, 1, 0, 'HQ.', 601, 628, 129, NULL, '2022-06-21 16:27:59'),
+(15, 'Tartil Dasar', 4, 14, 14, 1, 1, 0, 'TT.', 101, 128, 125, NULL, '2022-06-18 19:59:22'),
+(16, 'Tartil Menengah', 4, 14, 14, 1, 1, 0, 'TT.', 201, 228, 122, NULL, '2022-06-18 19:59:39'),
+(17, 'Tartil Umum', 4, 14, 14, 1, 1, 0, 'TT.', 301, 328, 119, NULL, '2022-06-18 19:59:56'),
+(18, 'Tafsir Bahasa Arab', 19, 6, 3, 1, 1, 0, 'TF.', 101, 109, 136, NULL, '2022-06-18 20:02:14'),
+(19, 'Tafsir Bahasa Indonesia', 5, 9, 8, 1, 1, 0, 'TF.', 201, 217, 118, NULL, '2022-06-18 20:02:40'),
+(20, 'Tafsir Bahasa Inggris', 5, 6, 6, 1, 1, 0, 'TF.', 301, 312, 118, NULL, '2022-06-18 20:02:56'),
+(21, 'Khaligrafi Naskah', 6, 11, 11, 1, 1, 0, 'KT.', 101, 122, 138, NULL, '2022-06-18 20:25:09'),
+(22, 'Khaligrafi Mushaf', 6, 13, 12, 1, 1, 0, 'KT.', 201, 225, 138, NULL, '2022-06-18 20:25:15'),
+(23, 'Khaligrafi Dekorasi', 6, 10, 9, 1, 1, 0, 'KT.', 301, 319, 138, NULL, '2022-06-18 20:25:23'),
+(24, 'Khaligrafi Kontemporer', 6, 11, 11, 1, 1, 0, 'KT.', 401, 422, 138, NULL, '2022-06-18 20:25:29'),
+(26, 'Musabaqoh Syarhil Qur\'an (MSQ)', 8, 14, 14, 1, 1, 1, 'SQ.', 1, 28, 131, NULL, '2022-06-18 20:08:32'),
+(27, 'Khutbah Jum\'at dan Adzan', 9, 14, 0, 1, 1, 0, 'KJ.', 1, 14, 132, NULL, '2022-06-18 20:09:41'),
+(29, 'Kitab Standar', 10, 13, 13, 1, 1, 0, 'KS.', 101, 126, 133, NULL, '2022-06-18 20:10:47'),
+(30, 'Karya Tulis Ilmiah Al Qur\'an', 11, 12, 13, 1, 1, 0, 'IQ.', 1, 25, 137, NULL, '2022-06-18 20:25:52'),
+(31, 'Hafalan Hadist/500 Hadist Tanpa Sanad', 12, 6, 6, 1, 1, 0, 'HH.', 201, 212, 111, NULL, '2022-06-21 01:22:27'),
+(32, 'Hafalan Hadist/100 Hadist Dengan Sanad', 13, 6, 6, 1, 1, 0, 'HH.', 101, 112, 121, NULL, '2022-06-21 01:53:55'),
+(33, 'Musabaqoh Fahmil Qur\'an (MFQ)', 7, 14, 14, 1, 1, 3, 'FQ.', 1, 28, 130, NULL, '2022-06-18 20:07:41');
 
 -- --------------------------------------------------------
 
@@ -6018,14 +6059,18 @@ INSERT INTO `mtq_nilai` (`id`, `peserta`, `kategori_id`, `golongan_id`, `status`
 
 CREATE TABLE `mtq_peserta` (
   `id` int(100) NOT NULL,
-  `nama` varchar(255) NOT NULL,
-  `utusan` varchar(255) DEFAULT NULL,
+  `user_id` bigint(255) NOT NULL,
   `jk` varchar(100) DEFAULT NULL,
+  `team` int(25) NOT NULL DEFAULT 1,
   `nomor` varchar(255) NOT NULL,
   `kategori_id` int(100) NOT NULL,
   `golongan_id` int(100) NOT NULL,
   `total` float NOT NULL,
+  `promotor` bigint(255) DEFAULT NULL,
+  `verifikator` varchar(255) DEFAULT NULL,
   `operator` varchar(255) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT 1,
+  `keterangan` text DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -6034,704 +6079,9 @@ CREATE TABLE `mtq_peserta` (
 -- Dumping data for table `mtq_peserta`
 --
 
-INSERT INTO `mtq_peserta` (`id`, `nama`, `utusan`, `jk`, `nomor`, `kategori_id`, `golongan_id`, `total`, `operator`, `created_at`, `updated_at`) VALUES
-(1, 'Ratna Sari', 'Lintau Buo Utara', 'Putri', '301', 1, 4, 83, 'Ridho Saputra S.Kom', '2022-06-20 21:37:02', '2022-06-20 21:37:02'),
-(2, 'Azam Muhammad Akbar', 'Salimpaung', 'Putra', '322', 1, 4, 85.75, 'Ridho Saputra S.Kom', '2022-06-22 21:47:09', '2022-06-22 21:47:09'),
-(3, 'Yamsasni Surya Erita', 'Salimpaung', 'Putri', '303', 1, 4, 68.5, 'Ridho Saputra S.Kom', '2022-06-20 21:58:49', '2022-06-20 21:58:49'),
-(4, 'Doni Gusman', 'Lintau Buo', 'Putra', '302', 1, 4, 85.75, 'Ridho Saputra S.Kom', '2022-06-20 21:49:11', '2022-06-22 07:01:46'),
-(5, 'Feri Ferdian', 'Sungai Tarab', 'Putri', '305', 1, 4, 79.25, 'Ridho Saputra S.Kom', '2022-06-20 22:16:06', '2022-06-20 22:16:06'),
-(6, 'Fadli Yahya', 'Batipuh Selatan', 'Putra', '306', 1, 4, 82, 'Ridho Saputra S.Kom', '2022-06-20 22:27:07', '2022-06-22 07:02:21'),
-(7, 'Retni Atika', 'Sungayang', 'Putri', '307', 1, 4, 65, 'Ridho Saputra S.Kom', '2022-06-20 22:37:19', '2022-06-20 22:37:19'),
-(8, 'Ismi Hamdani', 'Pariangan', 'Putra', '308', 1, 4, 86, 'Ridho Saputra S.Kom', '2022-06-20 22:48:34', '2022-06-22 07:01:28'),
-(9, 'Mimi Via Nora', 'Tanjung Baru', 'Putri', '309', 1, 4, 66.5, 'Ridho Saputra S.Kom', '2022-06-20 22:56:29', '2022-06-20 22:56:29'),
-(10, 'M.Irsyad', 'Rambatan', 'Putra', '310', 1, 4, 88, 'Ridho Saputra S.Kom', '2022-06-20 23:09:12', '2022-06-22 07:00:06'),
-(12, 'WANDA SAPUTRA', 'Sungai Tarab\r\n', 'Putra', 'Q. 102', 2, 6, 64.38, 'Zawil Husaini, S.Ag', '2022-06-21 09:06:35', '2022-06-21 09:06:35'),
-(13, 'Nazifa Tul\'ilmi', 'Tanjung Emas', 'Putri', '101', 1, 2, 60, 'Emilia Rizaldy, SE', '2022-06-21 09:09:22', '2022-06-21 09:09:22'),
-(14, 'Muhammad Febian Akbar', 'Tanjung Baru', 'Putra', '102', 1, 2, 79.25, 'Emilia Rizaldy, SE', '2022-06-21 09:16:29', '2022-06-21 09:16:29'),
-(15, 'ISNA WIRAHMADAYANTI', 'Sungai Tarab', 'Putri', 'Q. 105', 2, 6, 65.63, 'Zawil Husaini, S.Ag', '2022-06-21 09:18:57', '2022-06-21 09:18:57'),
-(16, 'Nur\'aini', 'Batipuh', 'Putri', '103', 1, 2, 86.25, 'Emilia Rizaldy, SE', '2022-06-21 09:22:50', '2022-06-21 09:22:50'),
-(17, 'Daffa Fatfaren', 'Sungai Tarab', 'Putra', '104', 1, 2, 89.5, 'Emilia Rizaldy, SE', '2022-06-21 09:26:54', '2022-06-21 09:26:54'),
-(18, 'BURHANUDDIN', 'Lintau Buo\r\n', 'Putra', 'Q. 106', 2, 6, 67.25, 'Zawil Husaini, S.Ag', '2022-06-21 09:34:41', '2022-06-21 09:34:41'),
-(19, 'Maryam Al Ghoziyah', 'X Koto', 'Putri', '105', 1, 2, 79.75, 'Emilia Rizaldy, SE', '2022-06-21 09:35:29', '2022-06-21 09:35:29'),
-(20, 'Aziza Rachmadany', 'Lintau Buo', 'Putri', 'HH.1.01', 13, 32, 51, 'Alwandris, S.Pd.I', '2022-06-21 09:37:20', '2022-06-21 09:37:20'),
-(21, 'Miftahur Rizqi', 'Lima Kaum', 'Putra', '106', 1, 2, 92, 'Emilia Rizaldy, SE', '2022-06-21 09:42:14', '2022-06-21 09:42:14'),
-(22, 'ZULMARICI', 'X Koto', 'Putra', 'Q. 108', 2, 6, 67, 'Zawil Husaini, S.Ag', '2022-06-21 09:43:38', '2022-06-21 09:43:38'),
-(23, 'Yonif Adiatma', 'Pariangan', 'Putra', 'HH.1.02', 13, 32, 46.5, 'Alwandris, S.Pd.I', '2022-06-21 09:47:35', '2022-06-21 09:47:35'),
-(24, 'Keysa Miftahurrahmah', 'Lima Kaum', 'Putri', '107', 1, 2, 79.75, 'Emilia Rizaldy, SE', '2022-06-21 09:48:28', '2022-06-21 09:48:28'),
-(25, 'Radiatul Qalbi', 'Salimpaung', 'Putra', '108', 1, 2, 78.5, 'Emilia Rizaldy, SE', '2022-06-21 09:54:30', '2022-06-21 09:54:30'),
-(26, 'JEFRIANSYAH', 'Lima Kaum\r\n', 'Putra', 'Q. 110', 2, 6, 68.5, 'Zawil Husaini, S.Ag', '2022-06-21 09:56:17', '2022-06-21 09:56:17'),
-(27, 'Ernawati', 'Kec. Lima Kaum', 'Putri', 'TF 3.01', 5, 20, 140, 'Gusni Yetti, S.AP', '2022-06-21 10:00:20', '2022-06-22 14:01:46'),
-(28, 'Miftahul Syakira Ramadhani', 'Batipuh Selatan', 'Putri', '109', 1, 2, 88, 'Emilia Rizaldy, SE', '2022-06-21 10:00:43', '2022-06-21 10:00:43'),
-(29, 'Mayola Andika', 'Kec. X Koto', 'Putri', 'TF 3 03', 5, 20, 157.67, 'Gusni Yetti, S.AP', '2022-06-21 10:02:45', '2022-06-22 14:00:16'),
-(30, 'Raudhatul Janah Putri', 'Batipuh', 'Putri', 'HH.1.03', 13, 32, 21, 'Alwandris, S.Pd.I', '2022-06-21 10:04:33', '2022-06-21 10:04:33'),
-(31, 'Yogi Imam Perdana SY', 'Kec. Lima Kaum', 'Putra', 'TF 3 04', 5, 20, 174.67, 'Gusni Yetti, S.AP', '2022-06-21 10:04:57', '2022-06-22 13:56:21'),
-(32, 'Rona Eka Putri', 'Kec. Rambatan', 'Putri', 'TF 3 05', 5, 20, 164, 'Gusni Yetti, S.AP', '2022-06-21 10:07:07', '2022-06-22 13:58:33'),
-(33, 'AHMAD FADHIL', 'Sungayang\r\n', 'Putra', 'Q. 112', 2, 6, 62.13, 'Zawil Husaini, S.Ag', '2022-06-21 10:07:58', '2022-06-21 10:07:58'),
-(34, 'Wahyudi', 'Kec. Pariangan', 'Putra', 'TF 3 06', 5, 20, 155, 'Gusni Yetti, S.AP', '2022-06-21 10:09:27', '2022-06-22 13:57:29'),
-(35, 'Alif Firza Yondira', 'Rambatan', 'Putra', '110', 1, 2, 87.25, 'Emilia Rizaldy, SE', '2022-06-21 10:14:14', '2022-06-21 10:14:14'),
-(36, 'Wahyu Ananda. A', 'Lima Kaum', 'Putra', 'HH.1.04', 13, 32, 35.5, 'Alwandris, S.Pd.I', '2022-06-21 10:17:08', '2022-06-21 10:17:08'),
-(37, 'NOVIZA LINDA', 'Sungayang', 'Putri', 'Q. 113', 2, 6, 57.5, 'Zawil Husaini, S.Ag', '2022-06-21 10:19:20', '2022-06-21 10:19:20'),
-(38, 'Dian Yunita Sari', 'Kec. Sungai Tarab', 'Putri', 'TF 3 07', 5, 20, 144.33, 'Gusni Yetti, S.AP', '2022-06-21 10:20:55', '2022-06-22 14:01:09'),
-(39, 'Suci Ramadhani', 'Tanjung Baru', 'Putri', 'SQ.01', 8, 26, 75.25, 'AINAL MARDIAH', '2022-06-21 10:21:08', '2022-06-22 13:16:02'),
-(40, 'Faiza Fitria Fahmi', 'Sungai Tarab', 'Putri', '111', 1, 2, 77, 'Emilia Rizaldy, SE', '2022-06-21 10:22:17', '2022-06-21 10:22:17'),
-(41, 'KHAIRUL HAMDI', 'Salimpaung \r\n', 'Putra', 'Q. 114', 2, 6, 57.38, 'Zawil Husaini, S.Ag', '2022-06-21 10:28:21', '2022-06-21 10:28:21'),
-(42, 'Thariq Prayata', 'Pariangan', 'Putra', '112', 1, 2, 85, 'Emilia Rizaldy, SE', '2022-06-21 10:31:09', '2022-06-21 10:31:09'),
-(43, 'Hamda Dioka Putra dkk', 'Sungai Tarab', 'Putra', 'SQ.02', 8, 26, 74.25, 'AINAL MARDIAH', '2022-06-21 10:32:07', '2022-06-22 13:11:16'),
-(44, 'Najmi Yatul Fijar', 'Tanjung Emas', 'Putri', 'HH.1.05', 13, 32, 29.5, 'Alwandris, S.Pd.I', '2022-06-21 10:32:13', '2022-06-21 10:32:13'),
-(45, 'Rahmi Aprilia Adianto', 'Kec. Lintau Buo', 'Putri', 'TF 3 09', 5, 20, 163, 'Gusni Yetti, S.AP', '2022-06-21 10:33:22', '2022-06-22 13:59:43'),
-(46, 'Nadally Khair Azzahra', 'Lintau Buo Utara', 'Putri', '113', 1, 2, 91.75, 'Emilia Rizaldy, SE', '2022-06-21 10:36:59', '2022-06-21 10:36:59'),
-(47, 'Kenzie Algifahri', 'Padang Ganting', 'Putra', '114', 1, 2, 79.25, 'Emilia Rizaldy, SE', '2022-06-21 10:41:58', '2022-06-21 10:41:58'),
-(48, 'Muhammad Reza', 'X Koto', 'Putra', 'HH.1.06', 13, 32, 47, 'Alwandris, S.Pd.I', '2022-06-21 10:47:07', '2022-06-21 10:47:07'),
-(49, 'Mira Sukmayenti', 'Kec. Batipuh', 'Putri', 'TF 3 11', 5, 20, 170.33, 'Gusni Yetti, S.AP', '2022-06-21 10:49:24', '2022-06-22 13:58:01'),
-(50, 'Puteri Hafidzakira dkk', 'Lima Kaum', 'Putri', 'SQ.03', 8, 26, 82.5, 'AINAL MARDIAH', '2022-06-21 10:57:58', '2022-06-22 13:12:03'),
-(51, 'Dytta Syahria Fitriani', 'Sungayang', 'Putri', 'HH.1.07', 13, 32, 40.5, 'Alwandris, S.Pd.I', '2022-06-21 11:02:34', '2022-06-21 11:02:34'),
-(52, 'Jefri Gustio dkk', 'Pariangan', 'Putra', 'SQ.04', 8, 26, 76.75, 'AINAL MARDIAH', '2022-06-21 11:03:12', '2022-06-22 13:07:44'),
-(53, 'Ferdy Vernanda', 'Kec. Sungai Tarab', 'Putra', 'TF 3 12', 5, 20, 157, 'Gusni Yetti, S.AP', '2022-06-21 11:08:30', '2022-06-22 13:56:59'),
-(54, 'Yasriana', 'X koto', 'Putri', 'SQ.05', 8, 26, 77.75, 'AINAL MARDIAH', '2022-06-21 11:12:22', '2022-06-22 15:31:13'),
-(55, 'Intan Deora Doriska', 'Salimpaung', 'Putri', 'HH.1.09', 13, 32, 29, 'Alwandris, S.Pd.I', '2022-06-21 11:16:01', '2022-06-21 11:16:01'),
-(56, 'Dava Oric Ramadhoni', 'Sungayang', 'Putra', 'HH.1.10', 13, 32, 49, 'Alwandris, S.Pd.I', '2022-06-21 11:29:03', '2022-06-21 11:29:03'),
-(57, 'Gilang Anugrah', 'Sungayang', 'Putra', 'SQ.06', 8, 26, 76.5, 'AINAL MARDIAH', '2022-06-21 11:31:49', '2022-06-22 13:08:34'),
-(58, 'Nabilatul Tussa\'adah', 'Sungai Tarab', 'Putri', 'HH.1.11', 13, 32, 75.5, 'Alwandris, S.Pd.I', '2022-06-21 11:41:56', '2022-06-21 11:41:56'),
-(59, 'Rahmatul Jannah dkk', 'Pariangan', 'Putri', 'SQ.07', 8, 26, 75.5, 'AINAL MARDIAH', '2022-06-21 11:51:34', '2022-06-22 13:15:34'),
-(60, 'Muhammad Assyafi\'i', 'Rambatan', 'Putra', 'HH.1.12', 13, 32, 48.5, 'Alwandris, S.Pd.I', '2022-06-21 11:53:45', '2022-06-21 11:53:45'),
-(61, 'Sofia Hafiza', 'Lintau Buo Utara', 'Putri', 'HH.1.13', 13, 32, 44.5, 'Alwandris, S.Pd.I', '2022-06-21 12:03:26', '2022-06-21 12:03:26'),
-(62, 'Abdul Latif', 'Padang Ganting', 'Putra', 'SQ.08', 8, 26, 74.5, 'AINAL MARDIAH', '2022-06-21 12:06:08', '2022-06-22 13:09:30'),
-(63, 'Panji Septriyon', 'Lintau Buo', 'Putra', 'HH.1.14', 13, 32, 49.5, 'Alwandris, S.Pd.I', '2022-06-21 12:17:10', '2022-06-21 12:17:10'),
-(64, 'Talitha Nurul Aini', 'Batipuh Selatan', 'Putri', 'TT.109', 4, 15, 83, 'Yusneti', '2022-06-21 12:30:18', '2022-06-22 13:52:03'),
-(65, 'M. Husnul Fikri', 'Sungai Tarab', 'Putra', 'TT.108', 4, 15, 76, 'Yusneti', '2022-06-21 12:32:17', '2022-06-22 13:45:55'),
-(66, 'Affiqa Rahmadani', 'Lima Kaum', 'Putri', 'TT. 105', 4, 15, 88.5, 'Yusneti', '2022-06-21 12:34:42', '2022-06-22 13:49:18'),
-(67, 'Fauziah Hafifah Hamida', 'X Koto', 'Putri', '401', 1, 1, 73.5, 'Rina Susanti, SE', '2022-06-21 12:35:03', '2022-06-21 12:35:03'),
-(68, 'Fahri Herlandes mahendra', 'Lintau Buo Utara', 'Putra', 'TT.102', 4, 15, 83, 'Yusneti', '2022-06-21 12:37:33', '2022-06-22 13:44:04'),
-(69, 'Raihanah Syakira Syani', 'Tanjung Emas', 'Putri', 'TT. 107', 4, 15, 79.5, 'Yusneti', '2022-06-21 12:39:04', '2022-06-22 13:53:47'),
-(70, 'Fathul Kamil', 'X Koto\r\n', 'Putra', '402', 1, 1, 65.5, 'Rina Susanti, SE', '2022-06-21 12:40:15', '2022-06-21 12:40:15'),
-(71, 'Raisya Zenia', 'Tanjung Baru', 'Putri', 'TT.113', 4, 15, 83.5, 'Yusneti', '2022-06-21 12:42:06', '2022-06-22 13:51:03'),
-(72, 'Assyifatu Haifa', 'Padang Ganting \r\n', 'Putri', '403', 1, 1, 58, 'Rina Susanti, SE', '2022-06-21 12:43:58', '2022-06-21 12:43:58'),
-(73, 'Muhammad Azam Syamil', 'Pariangan', 'Putra', 'TT.112', 4, 15, 84.5, 'Yusneti', '2022-06-21 12:44:51', '2022-06-22 13:42:21'),
-(74, 'Muhammad Hafiz', 'Lintau Buo\r\n', 'Putra', '404', 1, 1, 77, 'Rina Susanti, SE', '2022-06-21 12:45:56', '2022-06-21 12:45:56'),
-(75, 'Royyan Rahmat Maulana', 'Lima Kaum', 'Putra', 'TT.110', 4, 15, 81.5, 'Yusneti', '2022-06-21 12:47:39', '2022-06-22 13:44:48'),
-(76, 'Azkiya Zulfa Mafaza', 'Lintau Buo Utara\r\n', 'Putri', '405', 1, 1, 89.25, 'Rina Susanti, SE', '2022-06-21 12:47:40', '2022-06-21 12:47:40'),
-(77, 'Ahmad Faiz Al-Arkan', 'Tanjung Baru\r\n', 'Putra', '406', 1, 1, 84.5, 'Rina Susanti, SE', '2022-06-21 12:49:31', '2022-06-21 12:49:31'),
-(78, 'Farah Nur Fitriyah', 'Lintau Buo\r\n', 'Putri', '407', 1, 1, 76, 'Rina Susanti, SE', '2022-06-21 12:50:37', '2022-06-21 12:50:37'),
-(79, 'Latifa Ashabil Tsakib', 'Batipuh', 'Putri', 'TT.111', 4, 15, 91.75, 'Yusneti', '2022-06-21 12:50:38', '2022-06-22 14:01:11'),
-(80, 'Bisma Fathir Ambira', 'Padang Ganting \r\n', 'Putra', '408', 1, 1, 73.75, 'Rina Susanti, SE', '2022-06-21 12:52:16', '2022-06-21 12:52:16'),
-(81, 'Aisyah Ratifah Ardhani', 'Sungayang\r\n', 'Putri', '409', 1, 1, 72.75, 'Rina Susanti, SE', '2022-06-21 12:53:42', '2022-06-21 12:53:42'),
-(82, 'Fadhillah Ramadhani', 'Pariangan', 'Putri', 'TT.103', 4, 15, 80.5, 'Yusneti', '2022-06-21 12:54:38', '2022-06-22 13:53:03'),
-(83, 'Muhammad Altaf Aznenda', 'Tanjung Emas\r\n', 'Putra', '410', 1, 1, 79.75, 'Rina Susanti, SE', '2022-06-21 12:54:49', '2022-06-21 12:54:49'),
-(84, 'Aisyah Sholehah Hermi', 'Lima Kaum\r\n', 'Putri', '411', 1, 1, 70.25, 'Rina Susanti, SE', '2022-06-21 12:55:43', '2022-06-21 12:55:43'),
-(85, 'Luthfi Ramadani', 'Rambatan\r\n', 'Putra', '412', 1, 1, 75, 'Rina Susanti, SE', '2022-06-21 12:56:48', '2022-06-21 12:56:48'),
-(86, 'Kayla Dwi Atika', 'Sungai Tarab\r\n', 'Putri', '413', 1, 1, 68.5, 'Rina Susanti, SE', '2022-06-21 12:57:50', '2022-06-21 12:57:50'),
-(87, 'Fakhri Kamil', 'Salimpaung', 'Putra', 'TT.114', 4, 15, 71.5, 'Yusneti', '2022-06-21 12:58:57', '2022-06-22 13:47:33'),
-(88, 'Adric El Zafran', 'Lima Kaum\r\n', 'Putra', '414', 1, 1, 73.25, 'Rina Susanti, SE', '2022-06-21 12:58:59', '2022-06-21 12:58:59'),
-(89, 'Alif Yusuf Al Fathan', 'X Koto', 'Putra', 'TT.104', 4, 15, 85.5, 'Yusneti', '2022-06-21 13:01:57', '2022-06-22 13:41:19'),
-(90, 'Khaliful Jamal', 'Tanjung Emas', 'Putra', 'TT.106', 4, 15, 90, 'Yusneti', '2022-06-21 13:09:32', '2022-06-22 13:40:11'),
-(91, 'Rasti Avania Bulan', 'Lintau Buo Utara', 'Putri', 'TT.101', 4, 15, 87, 'Yusneti', '2022-06-21 13:11:24', '2022-06-22 13:50:15'),
-(92, 'Agna Nabila Chandra', 'Rambatan', 'Putri', 'HH.1.15', 13, 32, 54.5, 'Alwandris, S.Pd.I', '2022-06-21 14:07:46', '2022-06-21 14:07:46'),
-(94, 'Putri Wahyuni', 'Lintau Buo Utara', 'Putri', 'SQ.09', 8, 26, 78.25, 'AINAL MARDIAH', '2022-06-21 14:11:13', '2022-06-22 13:14:03'),
-(95, 'Nurul Fatma', 'Kec. Salimpaung', 'Putri', 'TF 201', 5, 19, 200, 'Gusni Yetti, S.AP', '2022-06-21 14:13:06', '2022-06-22 14:10:27'),
-(96, 'As\'ad Bil Fajri', 'Sungai Tarab', 'Putra', 'HH.1.16', 13, 32, 91.5, 'Alwandris, S.Pd.I', '2022-06-21 14:20:28', '2022-06-21 14:20:28'),
-(97, 'Dasrizal', 'Kec. X Koto', 'Putra', 'TF 2 02', 5, 19, 218, 'Gusni Yetti, S.AP', '2022-06-21 14:26:10', '2022-06-22 14:04:23'),
-(98, 'Tasya Zhafirah Andini', 'Padang Ganting', 'Putri', 'HH.1.17', 13, 32, 16, 'Alwandris, S.Pd.I', '2022-06-21 14:29:13', '2022-06-21 14:29:13'),
-(99, 'Vindi Jumatul Azmi', 'Salimpaung', 'Putra', 'SQ.10', 8, 26, 75.75, 'AINAL MARDIAH', '2022-06-21 14:31:54', '2022-06-22 13:09:02'),
-(100, 'Elni Yeti', 'Salimpaung \r\n', 'Putri', '501', 1, 5, 85.25, 'Bahrul Fahmi, S.AP', '2022-06-21 14:38:52', '2022-06-21 14:38:52'),
-(101, 'SITI AISYAH', 'Sungai Tarab\r\n', 'Putri', '201', 1, 3, 84, 'Rika Syafrina S.Sos', '2022-06-21 14:40:57', '2022-06-21 14:40:57'),
-(102, 'Abdu  Zuljalali Wal Ikram', 'Batipuh', 'Putra', 'HH.1.18', 13, 32, 43.5, 'Alwandris, S.Pd.I', '2022-06-21 14:41:29', '2022-06-21 14:41:29'),
-(103, 'Rahmi Savitri', 'Kec. Tanjung Emas', 'Putri', 'TF 2 03', 5, 19, 239, 'Gusni Yetti, S.AP', '2022-06-21 14:41:47', '2022-06-22 14:06:16'),
-(104, 'RYAN SYAHBANA', 'Lintau Buo', 'Putra', 'Q. 202', 2, 7, 83, 'M.Ridwan', '2022-06-21 14:43:32', '2022-06-21 14:43:32'),
-(105, 'ALFIN FIKRI', 'Salimpaung \r\n', 'Putra', '202', 1, 3, 88, 'Rika Syafrina S.Sos', '2022-06-21 14:45:26', '2022-06-21 14:45:26'),
-(106, 'Indra Rizal', 'Sungai Tarab\r\n', 'Putra', '502', 1, 5, 72.25, 'Bahrul Fahmi, S.AP', '2022-06-21 14:46:24', '2022-06-21 14:46:24'),
-(107, 'PUTRI ZAHARA ALTAFUNNISAH', 'Lima Kaum\r\n', 'Putri', '203', 1, 3, 89.75, 'Rika Syafrina S.Sos', '2022-06-21 14:49:53', '2022-06-21 14:49:53'),
-(108, 'Warniati', 'Tanjung Baru\r\n', 'Putri', '503', 1, 5, 73, 'Bahrul Fahmi, S.AP', '2022-06-21 14:52:54', '2022-06-21 14:52:54'),
-(109, 'Sherly Dini Ananta', 'Lima Kaum', 'Putri', 'HH.1.19', 13, 32, 60.5, 'Alwandris, S.Pd.I', '2022-06-21 14:52:59', '2022-06-21 14:52:59'),
-(110, 'RIRI RAHMADHANI', 'Batipuh', 'Putri', 'Q. 203', 2, 7, 92, 'M.Ridwan', '2022-06-21 14:53:58', '2022-06-21 14:53:58'),
-(111, 'Harun Al Rasyid', 'Kec. Lima Kaum', 'Putra', 'TF 204', 5, 19, 243.33, 'Gusni Yetti, S.AP', '2022-06-21 14:54:01', '2022-06-22 14:02:50'),
-(112, 'Cindy Wulandari /dkk', 'Batipuh', 'Putri', 'SQ.11', 8, 26, 80, 'AINAL MARDIAH', '2022-06-21 14:55:18', '2022-06-22 15:39:58'),
-(113, 'AGIT SUHENDRA', 'Tanjung Baru\r\n', 'Putra', '204', 1, 3, 83, 'Rika Syafrina S.Sos', '2022-06-21 14:56:28', '2022-06-21 14:56:28'),
-(114, 'NABIEL ESA NOVIANDINA', 'Pariangan', 'Putri', 'Q. 207', 2, 7, 87, 'M.Ridwan', '2022-06-21 15:02:25', '2022-06-21 15:02:25'),
-(115, 'Sahara Yulia Safitri', 'X Koto', 'Putri', 'HH.1.21', 13, 32, 59, 'Alwandris, S.Pd.I', '2022-06-21 15:03:11', '2022-06-21 15:03:11'),
-(116, 'Syaiful Akmal', 'Tanjung Baru\r\n', 'Putra', '504', 1, 5, 90.25, 'Bahrul Fahmi, S.AP', '2022-06-21 15:03:30', '2022-06-21 15:03:30'),
-(117, 'Ayu Azhari', 'Kec. Lintau Buo', 'Putri', 'TF 2 05', 5, 19, 239, 'Gusni Yetti, S.AP', '2022-06-21 15:04:39', '2022-06-22 14:06:58'),
-(118, 'FATHIYYAH ARAFAH AFSYA', 'Sungayang\r\n', 'Putri', '205', 1, 3, 92.75, 'Rika Syafrina S.Sos', '2022-06-21 15:06:44', '2022-06-21 15:06:44'),
-(119, 'AUREL', 'Sungai Tarab', 'Putri', 'Q. 209', 2, 7, 85.5, 'M.Ridwan', '2022-06-21 15:09:46', '2022-06-21 15:09:46'),
-(120, 'Fatmawati', 'Batipuh\r\n', 'Putri', '505', 1, 5, 82, 'Bahrul Fahmi, S.AP', '2022-06-21 15:12:19', '2022-06-21 15:12:19'),
-(121, 'Ikhwandi pramana/dkk', 'X Koto', 'Putra', 'SQ.12', 8, 26, 74.5, 'AINAL MARDIAH', '2022-06-21 15:15:41', '2022-06-22 13:10:03'),
-(122, 'Aziz Abdul Jabbar', 'Kec. Pariangan', 'Putra', 'TF 2 06', 5, 19, 233, 'Gusni Yetti, S.AP', '2022-06-21 15:17:21', '2022-06-22 14:03:17'),
-(123, 'GULAMAN ZAKI', 'Rambatan\r\n', 'Putra', '206', 1, 3, 91, 'Rika Syafrina S.Sos', '2022-06-21 15:17:50', '2022-06-21 15:17:50'),
-(124, 'AZHARI YUNIS', 'X Koto', 'Putra', 'Q. 210', 2, 7, 84, 'M.Ridwan', '2022-06-21 15:18:20', '2022-06-21 15:18:20'),
-(125, 'Nur Asli', 'X Koto\r\n', 'Putra', '506', 1, 5, 88, 'Bahrul Fahmi, S.AP', '2022-06-21 15:22:47', '2022-06-21 15:22:47'),
-(126, 'NURUL AISYAH', 'Lintau Buo', 'Putri', 'Q. 211', 2, 7, 86.5, 'M.Ridwan', '2022-06-21 15:27:07', '2022-06-21 15:27:07'),
-(127, 'ZAKYA LAILATUL HUSNA', 'Salimpaung \r\n', 'Putri', '207', 1, 3, 86.5, 'Rika Syafrina S.Sos', '2022-06-21 15:29:03', '2022-06-21 15:29:03'),
-(128, 'Elvi Suryanis', 'Kec. Rambatan', 'Putri', 'TF 2 09', 5, 19, 235, 'Gusni Yetti, S.AP', '2022-06-21 15:31:24', '2022-06-22 14:07:39'),
-(129, 'Hasnah', 'Pariangan\r\n', 'Putri', '507', 1, 5, 81, 'Bahrul Fahmi, S.AP', '2022-06-21 15:31:41', '2022-06-21 15:31:41'),
-(130, 'NUR SALSABILA', 'X Koto', 'Putri', 'Q. 213', 2, 7, 87, 'M.Ridwan', '2022-06-21 15:36:04', '2022-06-21 15:36:04'),
-(131, 'FACHRUL REZA ABDILLAH', 'Tanjung Emas\r\n', 'Putra', '208', 1, 3, 90.5, 'Rika Syafrina S.Sos', '2022-06-21 15:39:01', '2022-06-21 15:39:01'),
-(132, 'Baharuddin', 'Batipuh Selatan\r\n', 'Putra', '508', 1, 5, 75.5, 'Bahrul Fahmi, S.AP', '2022-06-21 15:41:40', '2022-06-21 15:41:40'),
-(133, 'Yelsi Melani/dkk', 'Padang Ganting', 'Putri', 'SQ.13', 8, 26, 77.75, 'AINAL MARDIAH', '2022-06-21 15:44:13', '2022-06-22 13:15:08'),
-(134, 'Rahmi Suci', 'Kec. Pariangan', 'Putri', 'TF 2 11', 5, 19, 208, 'Gusni Yetti, S.AP', '2022-06-21 15:44:42', '2022-06-22 14:08:49'),
-(135, 'FAUZIAH', 'Pariangan\r\n', 'Putri', '209', 1, 3, 83.25, 'Rika Syafrina S.Sos', '2022-06-21 15:48:57', '2022-06-21 15:48:57'),
-(136, 'Zulkipli Nasution', 'Kec.Padang Ganting', 'Putra', 'TF 2 12', 5, 19, 162, 'Gusni Yetti, S.AP', '2022-06-21 16:00:20', '2022-06-22 14:05:04'),
-(137, 'Saif Arrahman', 'Lintau Buo', 'Putra', 'SQ.14', 8, 26, 80, 'AINAL MARDIAH', '2022-06-21 16:01:52', '2022-06-22 13:10:45'),
-(138, 'Ibnu Hafiz', 'X Koto', 'Putra', 'HQ.310', 3, 11, 96.16, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:11:53', '2022-06-22 12:03:12'),
-(139, 'Ikramu Azzam Adinra', 'Batipuh', 'Putra', 'HQ. 302', 3, 11, 91.83, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:14:39', '2022-06-22 12:04:42'),
-(141, 'Genta Ariful Zikri', 'Tanjung Emas', 'Putra', 'HQ. 308', 3, 11, 96.5, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:17:36', '2022-06-22 12:09:22'),
-(142, 'Rhodiyatul Shalihat', 'Tanjung Emas', 'Putri', 'HQ. 307', 3, 11, 96.16, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:18:57', '2022-06-22 12:10:28'),
-(144, 'Aisyah Nafiul Cahya', 'Lintau Buo', 'Putri', 'HQ. 305', 3, 11, 93, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:21:17', '2022-06-22 12:11:03'),
-(146, 'Aisha Azda Kamila', 'Sungayang', 'Putri', 'HQ. 301', 3, 11, 88.16, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:23:00', '2022-06-22 12:13:03'),
-(147, 'Nadira Fadhila', 'Sungai Tarab', 'Putri', 'HQ. 303', 3, 11, 96.5, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:24:24', '2022-06-22 12:09:45'),
-(148, 'Nur Asni', 'X Koto\r\n', 'Putri', '509', 1, 5, 81.75, 'Bahrul Fahmi, S.AP', '2022-06-21 16:25:16', '2022-06-21 16:25:16'),
-(149, 'Raesya Putri Rahmadani', 'Salimpaung', 'Putri', 'HQ. 313', 3, 11, 88.66, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:26:17', '2022-06-22 12:12:26'),
-(150, 'Amril Rusli', 'Lintau Buo Utara\r\n', 'Putra', '510', 1, 5, 77.5, 'Bahrul Fahmi, S.AP', '2022-06-21 16:32:29', '2022-06-21 16:32:29'),
-(151, 'Abdul Hamid', 'Lima Kaum', 'Putra', 'HQ. 306', 3, 11, 84.83, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:37:07', '2022-06-22 12:06:03'),
-(152, 'Mardiyah', 'Kec. Lima Kaum', 'Putri', 'TF 2 13', 5, 19, 233, 'Gusni Yetti, S.AP', '2022-06-21 16:37:16', '2022-06-22 14:08:13'),
-(153, 'ILHAM MAULANA PUTRA', 'Sungayang\r\n', 'Putra', '210', 1, 3, 79.75, 'Rika Syafrina S.Sos', '2022-06-21 16:37:50', '2022-06-21 16:37:50'),
-(154, 'Ferdiansyah', 'Lintau Buo', 'Putra', 'HQ. 314', 3, 11, 80.16, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:39:57', '2022-06-22 12:07:36'),
-(155, 'Rosnidarnis', 'Rambatan\r\n', 'Putri', '511', 1, 5, 87, 'Bahrul Fahmi, S.AP', '2022-06-21 16:42:04', '2022-06-21 16:42:04'),
-(156, 'Muhammad Azmi Adli', 'Padang Ganting', 'Putra', 'HQ. 304', 3, 11, 88, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:43:08', '2022-06-22 12:05:29'),
-(157, 'FITRAH AULIA', 'Padang Ganting \r\n', 'Putri', '211', 1, 3, 84.75, 'Rika Syafrina S.Sos', '2022-06-21 16:44:14', '2022-06-21 16:44:14'),
-(158, 'Rahil Putri Ersya', 'Padang Ganting', 'Putri', 'HQ. 311', 3, 11, 87.33, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:44:55', '2022-06-22 12:13:29'),
-(159, 'Imel Dwi Putri', 'Batipuh Selatan', 'Putri', 'HQ. 309', 3, 11, 89.33, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:46:29', '2022-06-22 12:11:55'),
-(160, 'Fariz Abdurrahman', 'Lintau Buo Utara', 'Putra', 'HQ. 312', 3, 11, 92.83, 'Taufik Edwarsya, S.Sos', '2022-06-21 16:48:07', '2022-06-22 12:04:08'),
-(161, 'Yahdiyani', 'Kec. Batipuh', 'Putri', 'TF 2 15', 5, 19, 255.33, 'Gusni Yetti, S.AP', '2022-06-21 16:49:57', '2022-06-22 14:05:42'),
-(162, 'Idrizal', 'Lima Kaum\r\n', 'Putra', '512', 1, 5, 87.25, 'Bahrul Fahmi, S.AP', '2022-06-21 16:52:18', '2022-06-21 16:52:18'),
-(163, 'RISKY ADTYA', 'Pariangan\r\n', 'Putra', '212', 1, 3, 86.75, 'Rika Syafrina S.Sos', '2022-06-21 16:55:21', '2022-06-21 16:55:21'),
-(166, 'Suailidar', 'Batipuh Selatan\r\n', 'Putri', '513', 1, 5, 86.25, 'Bahrul Fahmi, S.AP', '2022-06-21 17:02:01', '2022-06-21 17:02:01'),
-(168, 'Aldo Valentino', 'Kec. Sungai Tarab', 'Putra', 'TF 2 16', 5, 19, 226, 'Gusni Yetti, S.AP', '2022-06-21 17:04:26', '2022-06-22 14:03:45'),
-(169, 'ZAHRATUL USNAH WINDRI', 'Batipuh Selatan\r\n', 'Putri', '213', 1, 3, 84, 'Rika Syafrina S.Sos', '2022-06-21 17:06:37', '2022-06-21 17:06:37'),
-(170, 'Zirrahmi Hayati, dkk', 'Tanjung Emas', 'Putri', 'FQ. 01', 7, 33, 890, 'TASNIP WATI MENA, SE', '2022-06-21 17:12:44', '2022-06-22 11:30:23'),
-(171, 'Zulfan', 'Rambatan\r\n', 'Putra', '514', 1, 5, 89.5, 'Bahrul Fahmi, S.AP', '2022-06-21 17:14:39', '2022-06-21 17:14:39'),
-(172, 'M FAUZAN', 'Pariangan\r\n', 'Putra', '214', 1, 3, 88.75, 'Rika Syafrina S.Sos', '2022-06-21 17:14:49', '2022-06-21 17:14:49'),
-(173, 'Aulia Wulandini, dkk', 'X Koto', 'Putri', 'FQ. 03', 7, 33, 340, 'TASNIP WATI MENA, SE', '2022-06-21 17:15:18', '2022-06-22 11:31:14'),
-(174, 'Mutia Nur Sahira, dkk', 'Sungayang', 'Putri', 'FQ. 05', 7, 33, 100, 'TASNIP WATI MENA, SE', '2022-06-21 17:16:52', '2022-06-22 11:31:59'),
-(175, 'Rosi Guspita, dkk', 'Pariangan', 'Putri', 'FQ. 07', 7, 33, 210, 'TASNIP WATI MENA, SE', '2022-06-21 17:18:25', '2022-06-22 11:32:44'),
-(176, 'Suciana Fatia, dkk', 'Lintau Buo Utara', 'Putri', 'FQ. 09', 7, 33, 620, 'TASNIP WATI MENA, SE', '2022-06-21 17:19:42', '2022-06-22 11:33:26'),
-(177, 'Mufidah Zatinnur, dkk', 'Rambatan', 'Putri', 'FQ. 11', 7, 33, 940, 'TASNIP WATI MENA, SE', '2022-06-21 17:20:48', '2022-06-22 11:34:18'),
-(178, 'Zikri Ardiansyah, dkk', 'Batipuh Selatan', 'Putra', 'FQ. 02', 7, 33, 400, 'TASNIP WATI MENA, SE', '2022-06-21 17:23:55', '2022-06-22 11:35:05'),
-(179, 'Farlid Suraf, dkk', 'Lintau Buo', 'Putra', 'FQ. 04', 7, 33, 450, 'TASNIP WATI MENA, SE', '2022-06-21 17:26:01', '2022-06-22 11:35:43'),
-(180, 'Hasbi Alfaruqy Z, dkk', 'Salimpaung', 'Putra', 'FQ. 06', 7, 33, 760, 'TASNIP WATI MENA, SE', '2022-06-21 17:27:05', '2022-06-22 11:36:21'),
-(181, 'Muhammad Rehan Ramadan, dkk', 'Tanjung Emas', 'Putra', 'FQ. 08', 7, 33, 1270, 'TASNIP WATI MENA, SE', '2022-06-21 17:28:13', '2022-06-22 11:37:11'),
-(182, 'Muhammad Irfan Hamid, dkk', 'Tanjung Baru', 'Putra', 'FQ. 10', 7, 33, 110, 'TASNIP WATI MENA, SE', '2022-06-21 17:29:27', '2022-06-22 11:37:44'),
-(183, 'Ichsan Ababil, dkk', 'Sungayang', 'Putra', 'FQ. 12', 7, 33, 100, 'TASNIP WATI MENA, SE', '2022-06-21 17:30:27', '2022-06-22 11:38:15'),
-(184, 'Abdillah Al Umami, dkk', 'Padang Ganting', 'Putra', 'FQ. 14', 7, 33, 160, 'TASNIP WATI MENA, SE', '2022-06-21 17:31:40', '2022-06-22 11:39:01'),
-(185, 'Refan Hendri, dkk', 'Lintau Buo Utara', 'Putra', 'FQ. 16', 7, 33, 210, 'TASNIP WATI MENA, SE', '2022-06-21 17:32:59', '2022-06-22 11:39:35'),
-(186, 'Muhammad Faris Abra, dkk', 'Sungai Tarab', 'Putra', 'FQ. 18', 7, 33, 1095, 'TASNIP WATI MENA, SE', '2022-06-21 17:35:23', '2022-06-22 11:40:13'),
-(191, 'Arnela Eka Fhadila', 'Pariangan', 'Putri', 'KS. 101', 10, 29, 78, 'Arfon', '2022-06-21 20:24:39', '2022-06-21 20:24:39'),
-(192, 'Ahmad Fauzi', 'Lima Kaum', 'Putra', 'KS. 102', 10, 29, 72, 'Arfon', '2022-06-21 20:40:11', '2022-06-21 20:40:11'),
-(193, 'Filqi Adillah Putri', 'Lintau Buo', 'Putri', 'KS. 103', 10, 29, 64, 'Arfon', '2022-06-21 20:44:06', '2022-06-22 06:27:36'),
-(194, 'Delfarianto', 'Tanjung Emas', 'Putra', 'KS. 104', 10, 29, 90, 'Arfon', '2022-06-21 20:46:31', '2022-06-21 20:46:31'),
-(195, 'Mugfira', 'Tanjung Emas', 'Putri', 'KS. 105', 10, 29, 50, 'Arfon', '2022-06-21 20:48:39', '2022-06-21 20:48:39'),
-(196, 'Andrea Alif Aulia', 'Batipuh', 'Putra', 'KS. 106', 10, 29, 62, 'Arfon', '2022-06-21 20:51:34', '2022-06-21 20:54:01'),
-(197, 'Wardatul Nabila', 'X Koto', 'Putri', 'KS. 107', 10, 29, 55, 'Arfon', '2022-06-21 20:58:21', '2022-06-21 20:58:21'),
-(198, 'Nursyamsiah', 'Tanjung Emas\r\n', 'Putri', '311', 1, 4, 84.25, 'Ridho Saputra S.Kom', '2022-06-21 21:01:42', '2022-06-21 21:01:42'),
-(199, 'CICI YANTI', 'Tanjung Emas', 'Putri', 'Q. 301', 2, 8, 92, 'Zawil Husaini, S.Ag', '2022-06-21 21:02:10', '2022-06-21 21:02:10'),
-(200, 'Idris Sujra Saleh', 'Padang Ganting', 'Putra', 'KS. 108', 10, 29, 62, 'Arfon', '2022-06-21 21:07:00', '2022-06-21 21:07:00'),
-(201, 'HANIF ALLAMUL HUDA', 'Sungai Tarab', 'Putra', 'Q.302', 2, 8, 85, 'Zawil Husaini, S.Ag', '2022-06-21 21:13:50', '2022-06-21 21:13:50'),
-(202, 'Rani Safitri', 'Lintau Buo Utara', 'Putri', 'KS. 109', 10, 29, 54, 'Arfon', '2022-06-21 21:14:12', '2022-06-21 21:14:12'),
-(203, 'Ade Kosfa', 'Tanjung Baru', 'Putra', '312', 1, 4, 77.5, 'Ridho Saputra S.Kom', '2022-06-21 21:15:42', '2022-06-22 07:02:37'),
-(204, 'Rendi Albuqori', 'Lintau Buo', 'Putra', 'KS. 110', 10, 29, 55, 'Arfon', '2022-06-21 21:17:06', '2022-06-21 21:17:06'),
-(205, 'Rahmat Ikhlas', 'X Koto', 'Putra', 'KS. 112', 10, 29, 68, 'Arfon', '2022-06-21 21:19:14', '2022-06-21 21:19:14'),
-(206, 'Zakiyatul Husnah', 'Rambatan', 'Putri', 'KS. 113', 10, 29, 72, 'Arfon', '2022-06-21 21:21:40', '2022-06-21 21:21:40'),
-(207, 'DINA MARDHIYAH', 'X Koto', 'Putri', 'Q. 303', 2, 8, 84.5, 'Zawil Husaini, S.Ag', '2022-06-21 21:23:00', '2022-06-21 21:23:00'),
-(208, 'Muhammad Abdullah', 'Tanjung Baru', 'Putra', 'KS. 114', 10, 29, 48, 'Arfon', '2022-06-21 21:24:39', '2022-06-21 21:24:39'),
-(209, 'Aida Fitria', 'Lintau Buo', 'Putri', '313', 1, 4, 86.25, 'Ridho Saputra S.Kom', '2022-06-21 21:25:11', '2022-06-22 07:03:16'),
-(210, 'Halimah', 'Batipuh Selatan', 'Putri', 'KS. 115', 10, 29, 63, 'Arfon', '2022-06-21 21:28:58', '2022-06-21 21:28:58'),
-(211, 'DEKRIS', 'Padang Ganting', 'Putra', 'Q. 304', 2, 8, 80, 'Zawil Husaini, S.Ag', '2022-06-21 21:30:33', '2022-06-22 12:53:29'),
-(212, 'Arya Danur Kadafi', 'X Koto', 'Putra', '314', 1, 4, 75.2, 'Ridho Saputra S.Kom', '2022-06-21 21:35:58', '2022-06-22 07:02:58'),
-(213, 'RAHMA YENI', 'Lintau Buo', 'Putri', 'Q. 319', 2, 8, 87, 'Zawil Husaini, S.Ag', '2022-06-22 21:53:44', '2022-06-22 21:53:44'),
-(214, 'Ervina Putri', 'Lima Kaum\r\n', 'Putri', '315', 1, 4, 85.75, 'Ridho Saputra S.Kom', '2022-06-21 21:46:47', '2022-06-21 21:46:47'),
-(215, 'KHAIRUL AMNI', 'Rambatan', 'Putra', 'Q. 306', 2, 8, 77.5, 'Zawil Husaini, S.Ag', '2022-06-21 21:51:54', '2022-06-21 21:51:54'),
-(216, 'Yoni Ade Saputra', 'Tanjung Emas', 'Putra', '316', 1, 4, 88.25, 'Ridho Saputra S.Kom', '2022-06-21 21:58:46', '2022-06-22 06:59:46'),
-(217, 'RIFKA DEWI', 'Rambatan', 'Putri', 'Q. 307', 2, 8, 90, 'Zawil Husaini, S.Ag', '2022-06-21 22:04:17', '2022-06-21 22:04:17'),
-(218, 'Azra Lusiana', 'Pariangan\r\n', 'Putri', '317', 1, 4, 77.75, 'Ridho Saputra S.Kom', '2022-06-21 22:12:25', '2022-06-21 22:12:25'),
-(219, 'MARTAVIA ARITOS', 'Tanjung Emas', 'Putra', 'Q. 308', 2, 8, 91.5, 'Zawil Husaini, S.Ag', '2022-06-21 22:14:21', '2022-06-21 22:14:21'),
-(220, 'Anton Saputra', 'Lima Kaum', 'Putra', '318', 1, 4, 86.35, 'Ridho Saputra S.Kom', '2022-06-21 22:24:09', '2022-06-22 07:00:28'),
-(221, 'YOGI PRATAMA', 'Lintau Buo', 'Putra', 'Q. 310', 2, 8, 90, 'Zawil Husaini, S.Ag', '2022-06-21 22:24:48', '2022-06-21 22:24:48'),
-(222, 'HALIMATUL ULYA', 'Padang Ganting', 'Putri', 'Q. 311', 2, 8, 91.5, 'Zawil Husaini, S.Ag', '2022-06-21 22:35:15', '2022-06-21 22:35:15'),
-(223, 'Tari Afrilia', 'Rambatan\r\n', 'Putri', '319', 1, 4, 74.5, 'Ridho Saputra S.Kom', '2022-06-21 22:35:30', '2022-06-21 22:35:30'),
-(224, 'Syukri Hamdi', 'Batipuh', 'Putra', '320', 1, 4, 90.25, 'Ridho Saputra S.Kom', '2022-06-21 22:44:54', '2022-06-22 06:59:31'),
-(225, 'TAUFIK WALHIDAYAH', 'Batipuh', 'Putra', 'Q. 312', 2, 8, 83, 'Zawil Husaini, S.Ag', '2022-06-21 22:47:21', '2022-06-21 22:47:21'),
-(226, 'ALIYAH KAMILA PUTRI', 'Tanjung Baru', 'Putri', 'Q. 313', 2, 8, 75, 'Zawil Husaini, S.Ag', '2022-06-21 22:54:34', '2022-06-21 22:54:34'),
-(227, 'HENDRI AKHIRUDIN', 'X Koto', 'Putra', 'Q. 314', 2, 8, 87, 'Zawil Husaini, S.Ag', '2022-06-21 23:03:37', '2022-06-21 23:03:37'),
-(229, 'Nurul Hafizatul Rahmi', 'X Koto', 'Putri', 'HQ.5.23', 3, 13, 85.16, 'Yusral', '2022-06-21 23:27:21', '2022-06-22 16:35:39'),
-(230, 'Afifah Tulzahra', 'Tanjung Baru', 'Putri', 'HQ.5.01', 3, 13, 75.83, 'Yusral', '2022-06-21 23:30:39', '2022-06-22 16:37:50'),
-(231, 'FADHIL ALFAZRI', 'Tanjung Baru', 'Putra', 'HQ. 602', 3, 14, 97.16, 'Elida Zarti, S.HI', '2022-06-21 23:31:47', '2022-06-22 10:44:31'),
-(232, 'Andre', 'X Koto', 'Putra', 'HQ.5.02', 3, 13, 91.66, 'Yusral', '2022-06-21 23:32:34', '2022-06-22 16:30:39'),
-(233, 'Haniyah Maritza Syua', 'Lima Kaum', 'Putri', 'HQ.5.03', 3, 13, 98, 'Yusral', '2022-06-21 23:35:05', '2022-06-22 16:46:19'),
-(235, 'ARGATHAN MUGHNI PIAGIO', 'Batipuh', 'Putra', 'HQ. 604', 3, 14, 91.66, 'Elida Zarti, S.HI', '2022-06-21 23:41:40', '2022-06-22 10:47:26'),
-(236, 'Husnul Fuadi', 'Tanjung Emas', 'Putra', 'HQ.5.04', 3, 13, 75.5, 'Yusral', '2022-06-21 23:46:07', '2022-06-22 16:33:30'),
-(238, 'Ghaida Hauna Khairunnisa', 'Rambatan', 'Putri', 'HQ.5.05', 3, 13, 80.16, 'Yusral', '2022-06-21 23:49:29', '2022-06-22 16:36:25'),
-(239, 'KENZY DZAKWAN ZAIN', 'Padang Ganting', 'Putra', 'HQ. 606', 3, 14, 88, 'Elida Zarti, S.HI', '2022-06-21 23:52:18', '2022-06-22 10:51:29'),
-(240, 'Muhammad Azka Ramadhan', 'Sungai Tarab', 'Putra', 'HQ.5.06', 3, 13, 85.33, 'Yusral', '2022-06-21 23:57:15', '2022-06-22 16:32:07'),
-(241, 'NABILA HATISA MIFA', 'Rambatan', 'Putri', 'HQ. 607', 3, 14, 98.5, 'Elida Zarti, S.HI', '2022-06-21 23:57:16', '2022-06-22 10:54:04'),
-(242, 'Rofifah Hakimah', 'Padang Ganting', 'Putri', 'HQ.5.07', 3, 13, 33, 'Yusral', '2022-06-22 00:01:03', '2022-06-22 16:48:00'),
-(243, 'HIDAYATUL ARBY JEFRAN', 'Rambatan', 'Putra', 'HQ. 608', 3, 14, 96, 'Elida Zarti, S.HI', '2022-06-22 00:01:03', '2022-06-22 10:46:17'),
-(244, 'Akbar Ramadhan', 'Lima Kaum', 'Putra', 'HQ.5.08', 3, 13, 96.66, 'Yusral', '2022-06-22 00:03:55', '2022-06-22 16:28:04'),
-(245, 'Zakira El Rabbania Afandi', 'Tanjung Emas', 'Putri', 'HQ.5.09', 3, 13, 74.16, 'Yusral', '2022-06-22 00:06:51', '2022-06-22 16:38:56'),
-(246, 'Muhammad Furqan SA', 'Batipuh', 'Putra', 'HQ.5.10', 3, 13, 96.16, 'Yusral', '2022-06-22 00:10:04', '2022-06-22 16:29:47'),
-(248, 'FAYYED BUDIANTO', 'Lintau Buo Utara', 'Putra', 'HQ. 610', 3, 14, 85.66, 'Elida Zarti, S.HI', '2022-06-22 00:13:28', '2022-06-22 10:52:51'),
-(249, 'SANTI AFIONITA', 'Kec. Batipuh Selatan', 'Putri', 'TT.301', 4, 17, 76, 'Rina Hastati, S.Sos', '2022-06-22 06:33:40', '2022-06-22 07:00:02'),
-(250, 'Muhammad Rifa’i', 'Kec. Lima Kaum', 'Putra', 'TT.302', 4, 17, 91.25, 'Rina Hastati, S.Sos', '2022-06-22 06:38:43', '2022-06-22 06:57:53'),
-(251, 'Viona Vitriyeni', 'Kec. Tanjung Baru', 'Putri', 'TT.303', 4, 17, 87, 'Rina Hastati, S.Sos', '2022-06-22 06:41:11', '2022-06-22 06:59:02'),
-(252, 'AMIR HAKIM', 'Kec. Batipuh', 'Putra', 'TT.304', 4, 17, 88, 'Rina Hastati, S.Sos', '2022-06-22 06:43:58', '2022-06-22 06:58:26'),
-(253, 'ANNISA FADILLA', 'Kec. Lintau Buo', 'Putri', 'TT.305', 4, 17, 82.25, 'Rina Hastati, S.Sos', '2022-06-22 06:46:36', '2022-06-22 06:59:29'),
-(254, 'Al Huda Akbar', 'Kec. Rambatan', 'Putra', 'TT.306', 4, 17, 93, 'Rina Hastati, S.Sos', '2022-06-22 06:50:14', '2022-06-22 06:56:49'),
-(255, 'Syilvia Rizki', 'Kec. Lima Kaum', 'Putri', 'TT.307', 4, 17, 93.25, 'Rina Hastati, S.Sos', '2022-06-22 06:55:32', '2022-06-22 06:55:32'),
-(256, 'Wahyu Eko Putra', 'Kec. Tanjung Baru', 'Putra', 'TT.308', 4, 17, 91.75, 'Rina Hastati, S.Sos', '2022-06-22 07:01:50', '2022-06-22 07:01:50'),
-(257, 'Puja Rahmatul Niza', 'Kec. Salimpaung', 'Putri', 'TT.309', 4, 17, 89.5, 'Rina Hastati, S.Sos', '2022-06-22 07:19:13', '2022-06-22 07:20:32'),
-(258, 'Hafiz Naldi', 'Kec. Sungai Tarab', 'Putra', 'TT.310', 4, 17, 83.25, 'Rina Hastati, S.Sos', '2022-06-22 07:22:01', '2022-06-22 07:25:13'),
-(259, 'Nurul Salsabila Yasfa', 'Kec. Sungayang', 'Putri', 'TT.311', 4, 17, 73, 'Rina Hastati, S.Sos', '2022-06-22 07:24:24', '2022-06-22 07:24:24'),
-(260, 'Berdo Ilham', 'Kec. Padang Ganting', 'Putra', 'TT.312', 4, 17, 80.5, 'Rina Hastati, S.Sos', '2022-06-22 07:27:17', '2022-06-22 07:27:17'),
-(261, 'Khairunnisa Afifah', 'Kec. Tanjung Emas', 'Putri', 'TT.313', 4, 17, 91.75, 'Rina Hastati, S.Sos', '2022-06-22 07:29:32', '2022-06-22 07:29:32'),
-(262, 'Khalilul Rahman', 'Kec. Tanjung Emas', 'Putra', 'TT.314', 4, 17, 87, 'Rina Hastati, S.Sos', '2022-06-22 07:32:03', '2022-06-22 07:32:03'),
-(263, 'Aisyah Nahril Ilmi', 'Kec. Rambatan', 'Putri', 'TT.325', 4, 17, 92.25, 'Rina Hastati, S.Sos', '2022-06-22 07:34:19', '2022-06-22 07:34:19'),
-(264, 'Arumi Zikrillah', 'Tanjung Emas', 'Putri', 'TT. 201', 4, 16, 89.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:03:18', '2022-06-22 08:03:18'),
-(265, 'Nabil Muhammad Syani', 'Tanjung Emas', 'Putra', 'TT. 202', 4, 16, 93.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:07:47', '2022-06-22 08:07:47'),
-(266, 'Stefhanie Amalia', 'Batipuh Selatan', 'Putri', 'TT.203', 4, 16, 87.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:14:07', '2022-06-22 08:14:07'),
-(267, 'Ahmad Maulana', 'Padang Ganting', 'Putra', 'TT. 204', 4, 16, 88.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:17:02', '2022-06-22 08:19:55'),
-(268, 'Amelia Putri', 'Batipuh', 'Putri', 'TT. 205', 4, 16, 85.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:24:06', '2022-06-22 08:25:40'),
-(269, 'Faisal', 'Pariangan', 'Putra', 'TT. 206', 4, 16, 92, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:29:04', '2022-06-22 08:29:04'),
-(270, 'Nabilatul Jannah', 'Lintau Buo', 'Putri', 'TT. 207', 4, 16, 88.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:32:18', '2022-06-22 08:32:18'),
-(271, 'Nofri Yandi', 'Tanjuang Baru', 'Putra', 'TT. 208', 4, 16, 91, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:35:28', '2022-06-22 08:35:28'),
-(272, 'Saidah Avisa Wali', 'Sepuluh Koto', 'Putri', 'TT. 209', 4, 16, 75.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:40:25', '2022-06-22 08:40:25'),
-(273, 'Haliman Karim', 'Lintau Buo Utara', 'Putra', 'TT. 210', 4, 16, 92.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:43:22', '2022-06-22 08:43:22'),
-(274, 'Marwatil Husna', 'Pariangan', 'Putri', 'TT. 211', 4, 16, 78.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 08:46:39', '2022-06-22 08:49:48'),
-(275, 'SABDA RAHMI / MUHAMMAD ALTHURASYIDIEQI', 'KEC. TANJUNG BARU', 'Putra', 'KJ. 01', 9, 27, 71.5, 'MIFTA NOVI, S.Ag', '2022-06-22 08:48:05', '2022-06-22 09:13:53'),
-(276, 'ALFI SYUKRI / M. TASNIM MUZAKI', 'LINTAU BUO', 'Putra', 'KJ. 02', 9, 27, 77.5, 'MIFTA NOVI, S.Ag', '2022-06-22 08:51:12', '2022-06-22 08:51:12'),
-(277, 'JUNAIDI / IRWANDA', 'LINTAU BUO UTARA', 'Putra', 'KJ. 03', 9, 27, 73.5, 'MIFTA NOVI, S.Ag', '2022-06-22 08:53:17', '2022-06-22 08:53:17'),
-(278, 'Nofrizal Afandi', 'Padang Ganting', 'Putra', 'KT.1.16', 6, 21, 94.67, 'Drs. H. Aswendi', '2022-06-22 08:53:30', '2022-06-22 08:53:30'),
-(279, 'Winda tri Setya', 'Pariangan', 'Putri', '115', 1, 2, 86.75, 'Emilia Rizaldy, SE', '2022-06-22 08:55:22', '2022-06-22 08:55:22'),
-(280, 'AL HADID RAHMAN / SALMAN LUTHFI', 'BATIPUH SELATAN', 'Putra', 'KJ. 04', 9, 27, 71, 'MIFTA NOVI, S.Ag', '2022-06-22 08:57:42', '2022-06-22 08:57:42'),
-(281, 'GHANI ACRYAN ARRASYID / RAHID M. MUKARDI', 'PADANG GANTING', 'Putra', 'KJ. 05', 9, 27, 66.5, 'MIFTA NOVI, S.Ag', '2022-06-22 09:00:24', '2022-06-22 09:00:24'),
-(282, 'Akhyar Hanif', 'Rambatan', 'Putra', 'KT.1.04', 6, 21, 93, 'Drs. H. Aswendi', '2022-06-22 09:00:54', '2022-06-22 09:00:54'),
-(283, 'Ahmad Yusuf', 'Lintau Buo Utara', 'Putra', '116', 1, 2, 91, 'Emilia Rizaldy, SE', '2022-06-22 09:02:44', '2022-06-22 09:02:44'),
-(284, 'ALIF FAKHRIZA / KHAIRUL FIKRI', 'SUNGAYANG', 'Putra', 'KJ. 06', 9, 27, 67.5, 'MIFTA NOVI, S.Ag', '2022-06-22 09:04:02', '2022-06-22 09:04:02'),
-(285, 'AINIL HAKIM', 'LINTAU BUO', 'Putra', 'KT.1.20', 6, 21, 91.33, 'Drs. H. Aswendi', '2022-06-22 09:04:37', '2022-06-22 09:07:46'),
-(286, 'Fitriani', 'Batipuh', 'Putri', 'HH.2.01', 12, 31, 45, 'Misrawati, A.Md', '2022-06-22 09:06:02', '2022-06-22 09:06:02'),
-(287, 'Cindy Aulia Muslima', 'Padang Ganting', 'Putri', '117', 1, 2, 90.75, 'Emilia Rizaldy, SE', '2022-06-22 09:08:41', '2022-06-22 09:08:41'),
-(288, 'Safira', 'Batipuh Selatan', 'Putri', 'SQ.15', 8, 26, 75.75, 'AINAL MARDIAH', '2022-06-22 09:09:04', '2022-06-22 09:09:04'),
-(289, 'RENDI ALVIN FAIZ', 'TANJUNG EMAS', 'Putra', 'KT.1.18', 6, 21, 89.83, 'Drs. H. Aswendi', '2022-06-22 09:12:35', '2022-06-22 09:12:35'),
-(290, 'Arif Maulanah', 'Batipuh Selatan', 'Putra', 'HH.2.02', 12, 31, 89, 'Misrawati, A.Md', '2022-06-22 09:14:53', '2022-06-22 09:14:53'),
-(291, 'M. Adrian Pratama', 'X Koto', 'Putra', '118', 1, 2, 83.5, 'Emilia Rizaldy, SE', '2022-06-22 09:16:03', '2022-06-22 09:16:03'),
-(292, 'SUNIL HAMSYAH', 'BATIPUH SELATAN', 'Putra', 'KT.1.08', 6, 21, 88.33, 'Drs. H. Aswendi', '2022-06-22 09:17:25', '2022-06-22 09:17:25'),
-(293, 'Nadira Oktavionika', 'Pariangan', 'Putri', '415', 1, 1, 58.5, 'Rina Susanti, SE', '2022-06-22 09:17:50', '2022-06-22 09:17:50'),
-(294, 'AHMAD SANUSI / SYAHRUL', 'RAMBATAN', 'Putra', 'KJ. 07', 9, 27, 75, 'MIFTA NOVI, S.Ag', '2022-06-22 09:19:03', '2022-06-22 09:23:01'),
-(295, 'RIO SAPUTRA', 'X KOTO', 'Putra', 'KT.1.14', 6, 21, 86.83, 'Drs. H. Aswendi', '2022-06-22 09:20:54', '2022-06-22 09:20:54'),
-(296, 'FAHRIZAL SYUKRI', 'LIMA KAUM', 'Putra', 'KT.1.12', 6, 21, 85.17, 'Drs. H. Aswendi', '2022-06-22 09:25:29', '2022-06-22 09:27:43'),
-(297, 'Faiza Attifa Afsya', 'Sungayang', 'Putri', '119', 1, 2, 91.5, 'Emilia Rizaldy, SE', '2022-06-22 09:26:06', '2022-06-22 09:26:06'),
-(298, 'Zidan Algifari Putra', 'Sungai Tarab', 'Putra', '416', 1, 1, 81.75, 'Rina Susanti, SE', '2022-06-22 09:27:16', '2022-06-22 09:27:16'),
-(299, 'Ibrahim Al Raziqy', 'Tanjung Emas', 'Putra', '120', 1, 2, 84.25, 'Emilia Rizaldy, SE', '2022-06-22 09:30:44', '2022-06-22 09:30:44'),
-(300, 'ADITYA RIZKY ILLAHI', 'TANJUNG BARU', 'Putra', 'KT.1.06', 6, 21, 83.5, 'Drs. H. Aswendi', '2022-06-22 09:31:40', '2022-06-22 09:31:40'),
-(301, 'Fauzi', 'Lintau Buo Utara', 'Putra', 'SQ.16', 8, 26, 75, 'AINAL MARDIAH', '2022-06-22 09:32:00', '2022-06-22 09:32:00'),
-(302, 'Izzah Syamila', 'Rambatan', 'Putri', 'HH.2.03', 12, 31, 30, 'Misrawati, A.Md', '2022-06-22 09:35:41', '2022-06-22 09:35:41'),
-(303, 'Keysha Adelia', 'Tanjung Emas', 'Putri', '417', 1, 1, 62, 'Rina Susanti, SE', '2022-06-22 09:37:02', '2022-06-22 09:37:02'),
-(304, 'HISBULLAH', 'SUNGAI TARAB', 'Putra', 'KT.1.02', 6, 21, 80.83, 'Drs. H. Aswendi', '2022-06-22 09:37:20', '2022-06-22 09:37:20'),
-(305, 'SISKA DAMASRA', 'Rambatan', 'Putri', 'Q. 115', 2, 6, 68.63, 'Zawil Husaini, S.Ag', '2022-06-22 09:37:28', '2022-06-22 09:37:28'),
-(306, 'Siti Zahra', 'Lintau Buo', 'Putri', '121', 1, 2, 91, 'Emilia Rizaldy, SE', '2022-06-22 09:40:37', '2022-06-22 09:40:37'),
-(307, 'BI FATHAN RIZKI', 'SALIMPAUNG', 'Putra', 'KT.1.10', 6, 21, 79.33, 'Drs. H. Aswendi', '2022-06-22 09:40:47', '2022-06-22 09:40:47'),
-(308, 'Ramzi Aziz Ilyas syakbani', 'Batipuh', 'Putra', '418', 1, 1, 70, 'Rina Susanti, SE', '2022-06-22 09:41:33', '2022-06-22 09:41:33'),
-(310, 'Savian Faras Adyasta', 'Tanjung Emas', 'Putra', 'HQ. 612', 3, 14, 94, 'Elida Zarti, S.HI', '2022-06-22 09:47:36', '2022-06-22 10:48:33'),
-(311, 'DARUSSALAM', 'Tanjung Emas', 'Putra', 'Q. 116', 2, 6, 68.25, 'Zawil Husaini, S.Ag', '2022-06-22 09:48:08', '2022-06-22 09:48:08'),
-(312, 'Adira Azzahra', 'Tanjung Baru', 'Putri', '419', 1, 1, 72.75, 'Rina Susanti, SE', '2022-06-22 09:48:15', '2022-06-22 09:48:15'),
-(313, 'Ulfa Hanum', 'Salimpaung', 'Putri', 'SQ.17', 8, 26, 74, 'AINAL MARDIAH', '2022-06-22 09:48:26', '2022-06-22 09:48:26'),
-(314, 'Akbar Rasyid', 'Lintau Buo', 'Putra', '122', 1, 2, 83, 'Emilia Rizaldy, SE', '2022-06-22 09:50:13', '2022-06-22 09:50:13'),
-(315, 'Hilya Nafiza', 'Sungai Tarab', 'Putri', 'HQ. 613', 3, 14, 88.5, 'Elida Zarti, S.HI', '2022-06-22 09:50:41', '2022-06-22 09:50:41'),
-(316, 'Muhammad Rafli', 'Pariangan', 'Putra', 'HQ. 614', 3, 14, 94.5, 'Elida Zarti, S.HI', '2022-06-22 09:54:37', '2022-06-22 09:54:37'),
-(317, 'Muhammad Aufa', 'Sungayang', 'Putra', '420', 1, 1, 70, 'Rina Susanti, SE', '2022-06-22 09:58:05', '2022-06-22 09:58:05'),
-(318, 'Aditya Maulana', 'Batipuh', 'Putra', 'HH.2.04', 12, 31, 33, 'Misrawati, A.Md', '2022-06-22 09:58:16', '2022-06-22 09:58:16'),
-(319, 'SYOFI YANTO', 'Batipuh Selatan', 'Putra', 'Q. 118', 2, 6, 65.5, 'Zawil Husaini, S.Ag', '2022-06-22 09:59:00', '2022-06-22 09:59:00'),
-(320, 'Hanifah Inayah', 'Salimpaung', 'Putri', '123', 1, 2, 88.25, 'Emilia Rizaldy, SE', '2022-06-22 09:59:01', '2022-06-22 09:59:01'),
-(321, 'Aqila Naysa Oktaviyan', 'Lintau Buo Utara', 'Putri', 'HQ. 615', 3, 14, 89.66, 'Elida Zarti, S.HI', '2022-06-22 10:03:00', '2022-06-22 10:03:00'),
-(322, 'RAUDATUL HAYATI', 'RAMBATAN', 'Putri', 'KT.1.15', 6, 21, 89.83, 'Drs. H. Aswendi', '2022-06-22 10:03:03', '2022-06-22 10:03:03'),
-(323, 'Ridho/dkk', 'Tanjung Baru', 'Putra', 'SQ.18', 8, 26, 72.25, 'AINAL MARDIAH', '2022-06-22 10:03:45', '2022-06-22 10:03:45'),
-(324, 'Syafiq Al Hady', 'X Koto', 'Putra', 'HQ. 616', 3, 14, 91.5, 'Elida Zarti, S.HI', '2022-06-22 10:05:53', '2022-06-22 10:48:57'),
-(325, 'Awalul Fikrha', 'Batipuh', 'Putra', '124', 1, 2, 81, 'Emilia Rizaldy, SE', '2022-06-22 10:05:58', '2022-06-22 10:05:58'),
-(326, 'FADILA RAMAHANI', 'LINTAU BUO UTARA', 'Putri', 'KT.1.17', 6, 21, 88, 'Drs. H. Aswendi', '2022-06-22 10:07:40', '2022-06-22 10:07:40'),
-(328, 'SYAFRI EFENDI', 'Padang Ganting', 'Putra', 'Q. 120', 2, 6, 62.5, 'Zawil Husaini, S.Ag', '2022-06-22 10:09:40', '2022-06-22 10:09:40'),
-(329, 'REGINA AZZAHRA', 'SUNGAI TARAB', 'Putri', 'KT.1.01', 6, 21, 86.33, 'Drs. H. Aswendi', '2022-06-22 10:14:05', '2022-06-22 10:14:05'),
-(330, 'Nayla Putri Sakina', 'Rambatan', 'Putri', '125', 1, 2, 85.75, 'Emilia Rizaldy, SE', '2022-06-22 10:16:34', '2022-06-22 10:16:34'),
-(331, 'Miftahul Jannah', 'Sungai Tarab', 'Putri', 'HH.2.09', 12, 31, 35.5, 'Misrawati, A.Md', '2022-06-22 11:34:23', '2022-06-22 11:34:23'),
-(332, 'Muhammad Altaf Adaby', 'Lima kaum', 'Putra', 'HQ. 618', 3, 14, 90.5, 'Elida Zarti, S.HI', '2022-06-22 10:19:11', '2022-06-22 10:49:33'),
-(333, 'MINDA FEBRIANI', 'LINTAU BUO', 'Putri', 'KT.1.05', 6, 21, 84.67, 'Drs. H. Aswendi', '2022-06-22 10:19:51', '2022-06-22 10:19:51'),
-(334, 'YESVI LESTARI', 'Lintau Buo Utara', 'Putri', 'Q. 121', 2, 6, 63.38, 'Zawil Husaini, S.Ag', '2022-06-22 10:21:24', '2022-06-22 10:21:24'),
-(335, 'Huayratul Isnaini', 'Pariangan', 'Putri', 'HQ. 619', 3, 14, 96.66, 'Elida Zarti, S.HI', '2022-06-22 10:22:03', '2022-06-22 10:22:03'),
-(336, 'Maryam', 'Batipuh Selatan', 'Putri', '421', 1, 1, 78.5, 'Rina Susanti, SE', '2022-06-22 10:22:13', '2022-06-22 10:22:13'),
-(337, 'M. Afdal Yusra', 'Batipuh Selatan', 'Putra', '126', 1, 2, 86.5, 'Emilia Rizaldy, SE', '2022-06-22 10:24:32', '2022-06-22 10:24:32'),
-(338, 'Adelio El Bariq', 'Batipuh selatan', 'Putra', 'HQ. 620', 3, 14, 94.66, 'Elida Zarti, S.HI', '2022-06-22 10:24:40', '2022-06-22 10:24:40'),
-(339, 'ZAKIA DENZOLA', 'SALIMPAUNG', 'Putri', 'KT.1.07', 6, 21, 83.17, 'Drs. H. Aswendi', '2022-06-22 10:25:52', '2022-06-22 10:25:52'),
-(340, 'Avika Mentari', 'Padang Ganting', 'Putri', 'HQ. 621', 3, 14, 97, 'Elida Zarti, S.HI', '2022-06-22 10:26:29', '2022-06-22 10:26:29'),
-(341, 'Wulan Fitri/dkk', 'Sungayang', 'Putri', 'SQ.19', 8, 26, 75.5, 'AINAL MARDIAH', '2022-06-22 10:27:57', '2022-06-22 10:27:57'),
-(342, 'Aksel Azora Renda', 'Sungai Tarab', 'Putra', 'HQ. 622', 3, 14, 97.5, 'Elida Zarti, S.HI', '2022-06-22 10:28:32', '2022-06-22 10:28:32'),
-(343, 'Hafizha Syaftia Izzati', 'Batipuh', 'Putri', '423', 1, 1, 71, 'Rina Susanti, SE', '2022-06-22 10:29:27', '2022-06-22 10:29:27'),
-(344, 'Natasya Dwi Putri', 'Tanjung Baru', 'Putri', '127', 1, 2, 85.75, 'Emilia Rizaldy, SE', '2022-06-22 10:30:37', '2022-06-22 10:30:37'),
-(346, 'LIZA FITRIA', 'TANJUNG BARU', 'Putri', 'KT.1.19', 6, 21, 81.33, 'Drs. H. Aswendi', '2022-06-22 10:32:34', '2022-06-22 10:32:34'),
-(347, 'Daffa Ibrahim', 'Salimpaung', 'Putra', 'HQ. 624', 3, 14, 89, 'Elida Zarti, S.HI', '2022-06-22 10:32:56', '2022-06-22 10:32:56'),
-(348, 'SYARIFAH HAYATI', 'Lima Kaum', 'Putri', 'Q. 123', 2, 6, 65.63, 'Zawil Husaini, S.Ag', '2022-06-22 10:32:56', '2022-06-22 12:31:22'),
-(349, 'Rindu Abelya Putri', 'Batipuh', 'Putri', 'HQ. 625', 3, 14, 97, 'Elida Zarti, S.HI', '2022-06-22 10:35:21', '2022-06-22 10:35:21'),
-(350, 'Lutfi Hakim', 'Pariangan', 'Putra', '424', 1, 1, 74.75, 'Rina Susanti, SE', '2022-06-22 10:36:51', '2022-06-22 10:36:51'),
-(351, 'Abrar Maulana', 'Sungayang', 'Putra', '128', 1, 2, 90.5, 'Emilia Rizaldy, SE', '2022-06-22 10:37:11', '2022-06-22 10:37:11'),
-(352, 'Abimayu Basupati Fitrah', 'Sungayang', 'Putra', 'HQ. 626', 3, 14, 91, 'Elida Zarti, S.HI', '2022-06-22 10:38:18', '2022-06-22 10:38:18'),
-(353, 'FADHILATUL HUSNA NASUTION', 'LIMA KAUM', 'Putri', 'KT.1.11', 6, 21, 79.5, 'Drs. H. Aswendi', '2022-06-22 10:39:28', '2022-06-22 10:42:41'),
-(354, 'Rhiva Yanti', 'Tanjung Baru', 'Putri', 'HQ. 627', 3, 14, 95.5, 'Elida Zarti, S.HI', '2022-06-22 10:40:10', '2022-06-22 10:58:29'),
-(355, 'Renaldo Wahyudi', 'Lima Kaum', 'Putra', 'HH.2.06', 12, 31, 44, 'Misrawati, A.Md', '2022-06-22 10:40:30', '2022-06-22 10:40:30'),
-(356, 'Adam Aldiansyah Pratama', 'Lintau Buo', 'Putra', 'HQ. 628', 3, 14, 89.33, 'Elida Zarti, S.HI', '2022-06-22 10:42:13', '2022-06-22 10:50:11'),
-(357, 'FAUZI YAHYA', 'Pariangan', 'Putra', 'Q. 124', 2, 6, 68.5, 'Zawil Husaini, S.Ag', '2022-06-22 10:44:10', '2022-06-22 10:44:10'),
-(359, 'Alifatur Rahmi', 'Rambatan', 'Putri', '425', 1, 1, 79.25, 'Rina Susanti, SE', '2022-06-22 10:44:54', '2022-06-22 10:44:54'),
-(360, 'Ramdani Amra/dkk', 'Batipuh Selatan', 'Putra', 'SQ.20', 8, 26, 74.75, 'AINAL MARDIAH', '2022-06-22 10:45:52', '2022-06-22 10:45:52'),
-(361, 'Melky Frinaldi', 'Batipuh Selatan', 'Putra', 'TT. 212', 4, 16, 76.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 10:53:04', '2022-06-22 10:53:04'),
-(362, 'AFRINALDO', 'Rambatan', 'Putra', 'Q. 126', 2, 6, 62.63, 'Zawil Husaini, S.Ag', '2022-06-22 10:53:17', '2022-06-22 10:53:17'),
-(363, 'Daffin Alvaro Azzamy', 'Lintau Buo Utara', 'Putra', '426', 1, 1, 78.25, 'Rina Susanti, SE', '2022-06-22 10:54:25', '2022-06-22 10:54:25'),
-(364, 'Sheryl Al Zafira', 'Sungayang', 'Putri', 'TT. 213', 4, 16, 84, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 10:55:50', '2022-06-22 10:55:50'),
-(365, 'Rafli', 'Salimpaung', 'Putra', 'TT. 214', 4, 16, 86.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 10:58:06', '2022-06-22 10:58:06'),
-(366, 'Febri Davina Zulfa', 'Lintau Buo', 'Putri', 'HH.2.07', 12, 31, 44.5, 'Misrawati, A.Md', '2022-06-22 11:03:13', '2022-06-22 11:03:13'),
-(367, 'WELLY AIDA PUTRI', 'Salimpaung', 'Putri', 'Q. 127', 2, 6, 55.88, 'Zawil Husaini, S.Ag', '2022-06-22 11:03:32', '2022-06-22 11:03:32'),
-(368, 'Annida Ikrima, dkk', 'Batipuh', 'Putri', 'FQ. 13', 7, 33, 210, 'TASNIP WATI MENA, SE', '2022-06-22 11:09:28', '2022-06-22 11:11:22'),
-(369, 'NAFIZATU ZAHRA', 'PARIANGAN', 'Putri', 'KT.1.03', 6, 21, 78, 'Drs. H. Aswendi', '2022-06-22 11:11:08', '2022-06-22 11:11:08'),
-(370, 'Muthia Lutfiani Riyandi, dkk', 'Lima Kaum', 'Putri', 'FQ. 15', 7, 33, 835, 'TASNIP WATI MENA, SE', '2022-06-22 11:14:21', '2022-06-22 11:14:21'),
-(371, 'HIDAYATURROHMI', 'Lintau Buo Utara', 'Putra', 'Q. 128', 2, 6, 64.88, 'Zawil Husaini, S.Ag', '2022-06-22 11:14:50', '2022-06-22 11:14:50'),
-(372, 'Zahwa Fillilla Arafa', 'Sungai Tarab', 'Putri', 'SQ.21', 8, 26, 78.5, 'AINAL MARDIAH', '2022-06-22 11:15:40', '2022-06-22 11:15:40'),
-(373, 'Salsabilla Aulia Fitri, dkk', 'Padang Ganting', 'Putri', 'FQ. 17', 7, 33, 115, 'TASNIP WATI MENA, SE', '2022-06-22 11:17:08', '2022-06-22 13:41:25'),
-(374, 'QURRATA AINI', 'PADANG GANTING', 'Putri', 'KT.1.13', 6, 21, 76, 'Drs. H. Aswendi', '2022-06-22 11:17:57', '2022-06-22 11:17:57'),
-(375, 'Muhammad Fathur Rahman, dkk', 'Batipuh', 'Putra', 'FQ. 20', 7, 33, 0, 'TASNIP WATI MENA, SE', '2022-06-22 11:19:38', '2022-06-22 11:19:38'),
-(376, 'M.Insan Asshiddiqie', 'Rambatan', 'Putra', 'HH.2.08', 12, 31, 85.5, 'Misrawati, A.Md', '2022-06-22 11:19:48', '2022-06-22 11:19:48'),
-(377, 'KEYZA AURELIA HAQ', 'Lima Kaum', 'Putri', 'HQ. 605', 3, 14, 75.16, 'Elida Zarti, S.HI', '2022-06-22 11:20:25', '2022-06-22 11:20:25'),
-(378, 'Akramul Huda, dkk', 'Pariangan', 'Putra', 'FQ. 22', 7, 33, 425, 'TASNIP WATI MENA, SE', '2022-06-22 11:21:46', '2022-06-23 14:13:12'),
-(379, 'NAYFA ADZKIYATUR RAHMA', 'Batipuh selatan', 'Putri', 'HQ. 603', 3, 14, 68, 'Elida Zarti, S.HI', '2022-06-22 11:22:21', '2022-06-22 11:22:21'),
-(380, 'Atifa Kirani', 'Rambartan', 'Putri', 'HQ. 315', 3, 11, 90.33, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:22:39', '2022-06-22 11:22:39'),
-(381, 'FEMELLIYA ARISKA JANNAH', 'SUNGAYANG', 'Putri', 'KT.1.21', 6, 21, 74.67, 'Drs. H. Aswendi', '2022-06-22 11:23:15', '2022-06-22 11:23:15'),
-(382, 'Syaiful Mubarak, dkk', 'X Koto', 'Putra', 'FQ. 24', 7, 33, 575, 'TASNIP WATI MENA, SE', '2022-06-22 11:23:43', '2022-06-23 14:13:42'),
-(383, 'Adiva Syaza Alsahfa', 'Salimpaung', 'Putri', 'HQ. 611', 3, 14, 81, 'Elida Zarti, S.HI', '2022-06-22 11:25:42', '2022-06-22 11:25:42');
-INSERT INTO `mtq_peserta` (`id`, `nama`, `utusan`, `jk`, `nomor`, `kategori_id`, `golongan_id`, `total`, `operator`, `created_at`, `updated_at`) VALUES
-(384, 'Muhammad Afdal Zikri', 'Sungai Tarab', 'Putra', 'HQ. 316', 3, 11, 96.33, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:26:56', '2022-06-22 11:26:56'),
-(385, 'ZIKRA RAHMANI', 'BATIPUH SELATAN', 'Putri', 'KT.1.09', 6, 21, 72.83, 'Drs. H. Aswendi', '2022-06-22 11:27:34', '2022-06-22 11:27:34'),
-(386, 'Nayla Alivah', 'Lintau Buo Utara', 'Putri', 'HQ. 317', 3, 11, 91.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:30:58', '2022-06-22 11:30:58'),
-(1212, 'Okta Rinaldi', 'Padang Ganting', 'Putra', '304', 1, 4, 85.75, 'Ridho Saputra S.Kom', '2022-06-20 22:05:50', '2022-06-22 07:02:01'),
-(1246, 'Syafa Putri Arrabi', 'Sungayang', 'Putri', 'HQ. 623', 3, 14, 97.5, 'Elida Zarti, S.HI', '2022-06-22 10:31:00', '2022-06-22 10:31:00'),
-(1247, 'LIFIA NA DINDA', 'Lintau Buo', 'Putri', 'HQ. 609', 3, 14, 97.5, 'Elida Zarti, S.HI', '2022-06-22 00:10:17', '2022-06-22 19:10:26'),
-(1248, 'Keyza Zahra Almahyra', 'Tanjung Emas', 'Putri', 'HQ. 617', 3, 14, 97.5, 'Elida Zarti, S.HI', '2022-06-22 10:08:41', '2022-06-22 10:08:41'),
-(1249, 'Qodysa Azkiya', 'X Koto', 'Putri', 'HQ. 601', 3, 14, 97.5, 'Elida Zarti, S.HI', '2022-06-21 16:21:38', '2022-06-22 10:55:09'),
-(1346, 'Febrino Fajri Anri', 'Sungayang', 'Putra', 'HQ. 318', 3, 11, 83.33, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:33:00', '2022-06-22 11:33:00'),
-(1347, 'Lili Suryani', 'Lima Kaum', 'Putri', 'HH.2.05', 12, 31, 35.5, 'Misrawati, A.Md', '2022-06-22 10:17:42', '2022-06-22 10:17:42'),
-(1348, 'Habibatul Hasanan', 'Batipuh', 'Putri', 'HQ. 319', 3, 11, 96.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:34:47', '2022-06-22 11:34:47'),
-(1349, 'HADANI LUTHFI', 'RAMBATAN', 'Putra', 'KT.2.24', 6, 22, 94.83, 'Drs. H. Aswendi', '2022-06-22 11:35:45', '2022-06-22 11:35:45'),
-(1350, 'Zulfikran Bhayangkara', 'Batipuh Selatan', 'Putra', 'HQ. 320', 3, 11, 92.33, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:36:40', '2022-06-22 11:36:40'),
-(1351, 'Zahra Putri Hardiany', 'X Koto', 'Putri', 'HQ. 321', 3, 11, 94.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:38:39', '2022-06-22 11:38:39'),
-(1352, 'Alvino Zul Putra /dkk', 'Batipuh', 'Putra', 'SQ.22', 8, 26, 77.25, 'AINAL MARDIAH', '2022-06-22 11:39:00', '2022-06-22 11:39:00'),
-(1353, 'Irfan Darul Haq', 'Rambatan', 'Putra', 'H. 322', 3, 11, 95.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:40:20', '2022-06-22 11:41:27'),
-(1354, 'TARMIZI SYAWALI', 'TANJUNG EMAS', 'Putra', 'KT.2.18', 6, 22, 92.67, 'Drs. H. Aswendi', '2022-06-22 11:40:24', '2022-06-22 11:40:24'),
-(1355, 'Laila Cassia Hanum', 'Lima Kaum', 'Putri', 'HQ. 323', 3, 11, 96.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:42:57', '2022-06-22 11:42:57'),
-(1356, 'ADIGUS PUTRA', 'LINTAU BUO', 'Putra', 'KT.2.04', 6, 22, 90.67, 'Drs. H. Aswendi', '2022-06-22 11:43:06', '2022-06-22 11:43:06'),
-(1357, 'Ahmad Muaz', 'Salimpaung', 'Putra', 'HQ. 324', 3, 11, 90.16, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:44:46', '2022-06-22 11:44:46'),
-(1358, 'Adel Yardinia Putri, dkk', 'Lintau Buo', 'Putri', 'FQ. 19', 7, 33, 520, 'TASNIP WATI MENA, SE', '2022-06-22 11:46:20', '2022-06-22 13:41:57'),
-(1359, 'Natasya Safitri', 'Tanjung Baru', 'Putri', 'HQ. 325', 3, 11, 92.83, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:46:23', '2022-06-22 11:46:23'),
-(1360, 'MUHAMMAD GIBRAL NABIL', 'PARIANGAN', 'Putra', 'KT.2.22', 6, 22, 89.17, 'Drs. H. Aswendi', '2022-06-22 11:46:56', '2022-06-22 11:46:56'),
-(1361, 'Agiffar Idris', 'Tanjung Baru', 'Putra', 'HQ. 326', 3, 11, 93, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:48:14', '2022-06-22 11:48:14'),
-(1362, 'Fatiha Faqihatoelhaq', 'Pariangan', 'Putri', 'HQ. 327', 3, 11, 94.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:50:01', '2022-06-22 11:50:01'),
-(1363, 'GILANG KANUGRAHA PRATAMA', 'SALIMPAUNG', 'Putra', 'KT.2.06', 6, 22, 87.5, 'Drs. H. Aswendi', '2022-06-22 11:51:06', '2022-06-22 11:51:06'),
-(1364, 'Azzahra Raudhatul Jannah, dkk', 'Sungai Tarab', 'Putri', 'FQ. 21', 7, 33, 960, 'TASNIP WATI MENA, SE', '2022-06-22 11:51:38', '2022-06-22 13:42:28'),
-(1365, 'Hatta Arfa', 'Pariangan', 'Putra', 'HQ. 328', 3, 11, 87.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 11:52:26', '2022-06-22 11:52:26'),
-(1366, 'Fadhil Al Hadi', 'Sungai Tarab', 'Putra', 'HH.2.10', 12, 31, 41.5, 'Misrawati, A.Md', '2022-06-22 11:54:14', '2022-06-22 11:54:14'),
-(1367, 'AIDIL FAJRI', 'LIMA KAUM', 'Putra', 'KT.2.26', 6, 22, 86.17, 'Drs. H. Aswendi', '2022-06-22 11:56:43', '2022-06-22 11:56:43'),
-(1368, 'ABDUL RAHMAN', 'BATIPUH SELATAN', 'Putra', 'KT.2.08', 6, 22, 85, 'Drs. H. Aswendi', '2022-06-22 11:59:16', '2022-06-22 11:59:16'),
-(1369, 'Aura Fabi Ayiyi/dkk', 'Tanjung emas', 'Putri', 'SQ.23', 8, 26, 82.25, 'AINAL MARDIAH', '2022-06-22 12:00:17', '2022-06-22 12:00:17'),
-(1370, 'MUHAMMAD FIKRI HASAN', 'SUNGAI TARAB', 'Putra', 'KT2.02', 6, 22, 83.83, 'Drs. H. Aswendi', '2022-06-22 12:01:52', '2022-06-22 12:01:52'),
-(1371, 'ARDINAL FEBRIAN', 'LINTAU BUO UTARA', 'Putra', 'KT.2.10', 6, 22, 82, 'Drs. H. Aswendi', '2022-06-22 12:05:20', '2022-06-22 12:05:20'),
-(1372, 'Assyifa Khaira nesvi', 'Rambatan', 'Putri', 'TT.115', 4, 15, 91.5, 'Yusneti', '2022-06-22 12:08:16', '2022-06-22 12:08:16'),
-(1373, 'RODI KHAIRUL', 'TANJUNG BARU', 'Putra', 'KT.2.12', 6, 22, 80.67, 'Drs. H. Aswendi', '2022-06-22 12:09:04', '2022-06-22 12:09:04'),
-(1374, 'ZULFAJRI', 'SUNGAYANG', 'Putra', 'KT.2.16', 6, 22, 79.33, 'Drs. H. Aswendi', '2022-06-22 12:11:41', '2022-06-22 12:11:41'),
-(1375, 'Muhammad Zaid Mukhsin', 'Rambatan', 'Putra', 'TT.116', 4, 15, 92.25, 'Yusneti', '2022-06-22 12:12:43', '2022-06-22 12:12:43'),
-(1376, 'HENDRI FIRDAUS', 'X KOTO', 'Putra', 'KT.2.14', 6, 22, 77.5, 'Drs. H. Aswendi', '2022-06-22 12:14:16', '2022-06-22 12:14:16'),
-(1377, 'Dwi Yuli Astina', 'Lintau Buo Utara', 'Putri', 'HQ.5.11', 3, 13, 96.83, 'Yusral', '2022-06-22 12:15:56', '2022-06-22 12:18:09'),
-(1378, 'IRSYAD HAKIM', 'BATIPUH', 'Putra', 'KT.2.20', 6, 22, 76.33, 'Drs. H. Aswendi', '2022-06-22 12:17:09', '2022-06-22 12:17:09'),
-(1379, 'Nayla Riska Wafira', 'Sungai Tarab', 'Putri', 'TT.117', 4, 15, 86, 'Yusneti', '2022-06-22 12:17:56', '2022-06-22 12:17:56'),
-(1380, 'Naila Alfara Aulia', 'Padang Ganting', 'Putri', 'HH.2.11', 12, 31, 32, 'Misrawati, A.Md', '2022-06-22 12:18:29', '2022-06-22 12:18:29'),
-(1381, 'Muhammad Ifkar/dkk', 'LIma Kaum', 'Putra', 'SQ.24', 8, 26, 78.25, 'AINAL MARDIAH', '2022-06-22 12:19:08', '2022-06-22 15:28:14'),
-(1382, 'Abid Akila Pranaja', 'Lintau Buo', 'Putra', 'TT.118', 4, 15, 85.25, 'Yusneti', '2022-06-22 12:22:18', '2022-06-22 12:22:18'),
-(1383, 'Rasyid Hamdani', 'Rambatan', 'Putra', 'HQ.5.12', 3, 13, 50, 'Yusral', '2022-06-22 12:22:24', '2022-06-22 12:22:24'),
-(1384, 'Mawizatil hasanah', 'Sungayang', 'Putri', 'TT.119', 4, 15, 83, 'Yusneti', '2022-06-22 12:24:39', '2022-06-22 12:24:39'),
-(1385, 'Baktiku Tulus Islami Hasanul', 'Lintau Buo', 'Putri', 'HQ.5.13', 3, 13, 90, 'Yusral', '2022-06-22 12:28:45', '2022-06-22 12:28:45'),
-(1386, 'Azzam Muflih', 'Padang Ganting', 'Putra', 'TT.120', 4, 15, 73.75, 'Yusneti', '2022-06-22 12:30:56', '2022-06-22 12:30:56'),
-(1387, 'Abdullah Afdhal', 'Lintau Buo', 'Putra', 'HQ.5.14', 3, 13, 89.83, 'Yusral', '2022-06-22 12:32:58', '2022-06-22 12:32:58'),
-(1388, 'Naziva Qurrata Aini', 'padang ganting', 'Putri', 'TT.123', 4, 15, 87.75, 'Yusneti', '2022-06-22 12:40:25', '2022-06-22 12:40:25'),
-(1389, 'Afka Muhammad Sauqi', 'Batipuh Selatan', 'Putra', 'TT.122', 4, 15, 81.75, 'Yusneti', '2022-06-22 12:37:05', '2022-06-22 12:37:05'),
-(1390, 'Syakira El Rabbania Afandi', 'Sungai Tarab', 'Putri', 'HQ.5.15', 3, 13, 63.83, 'Yusral', '2022-06-22 12:37:20', '2022-06-22 16:41:34'),
-(1391, 'Najwa Azzahra', 'X Koto', 'Putri', 'TT.121', 4, 15, 87.75, 'Yusneti', '2022-06-22 12:34:13', '2022-06-22 12:34:13'),
-(1392, 'Firdaus', 'X Koto', 'Putra', 'HH.2.12', 12, 31, 48.5, 'Misrawati, A.Md', '2022-06-22 12:43:10', '2022-06-22 12:43:10'),
-(1393, 'Farhan Khalid', 'Sungayang', 'Putra', 'TT.124', 4, 15, 71.75, 'Yusneti', '2022-06-22 12:43:14', '2022-06-22 12:43:14'),
-(1394, 'Nabila', 'Salimpaung', 'Putri', 'TT.125', 4, 15, 81.75, 'Yusneti', '2022-06-22 12:46:08', '2022-06-22 12:46:08'),
-(1395, 'Ervin Rizqullah', 'Batipuh', 'Putra', 'TT.126', 4, 15, 84.25, 'Yusneti', '2022-06-22 12:49:57', '2022-06-22 12:49:57'),
-(1396, 'Rusyda Fariha Rahmi', 'Lintau Buo', 'Putri', 'TT.127', 4, 15, 81.75, 'Yusneti', '2022-06-22 12:52:52', '2022-06-22 12:52:52'),
-(1397, 'Muhammad Restu', 'Tj. Baru', 'Putra', 'TT.128', 4, 15, 93, 'Yusneti', '2022-06-22 12:57:08', '2022-06-22 12:57:08'),
-(1398, 'DERDANELLA', 'LINTAU BUO UTARA', 'Putri', 'KT.2.03', 6, 22, 91, 'Drs. H. Aswendi', '2022-06-22 13:04:34', '2022-06-22 13:04:34'),
-(1399, 'EGA NURRATUL JANNAH', 'PARIANGAN', 'Putri', 'KT.2.07', 6, 22, 89.33, 'Drs. H. Aswendi', '2022-06-22 13:07:21', '2022-06-22 13:07:21'),
-(1400, 'ARDEA NESITA PUTRI', 'RAMBATAN', 'Putri', 'KT.2.23', 6, 22, 88, 'Drs. H. Aswendi', '2022-06-22 13:09:55', '2022-06-22 13:09:55'),
-(1401, 'FITRIA NOVITA', 'LINTAU BUO', 'Putri', 'KT.2.01', 6, 22, 86.17, 'Drs. H. Aswendi', '2022-06-22 13:13:00', '2022-06-22 13:13:00'),
-(1402, 'AULIA RAHMITA', 'LIMA KAUM', 'Putri', 'KT.2.17', 6, 22, 85.17, 'Drs. H. Aswendi', '2022-06-22 13:15:49', '2022-06-22 13:15:49'),
-(1403, 'Arifah Sahira', 'Sungai Tarab', 'Putri', 'HQ. 401', 3, 12, 79.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:16:36', '2022-06-22 13:16:36'),
-(1404, 'RIKA PERMATA SARI', 'SUNGAYANG', 'Putri', 'KT.2.05', 6, 22, 83.33, 'Drs. H. Aswendi', '2022-06-22 13:18:36', '2022-06-22 13:18:36'),
-(1405, 'Lathifah Zahra', 'X Koto', 'Putri', 'HQ. 403', 3, 12, 96.33, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:18:38', '2022-06-22 13:18:38'),
-(1406, 'Rayvan Octorezky', 'Padang Ganting', 'Putra', 'HQ. 404', 3, 12, 77.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:20:53', '2022-06-22 13:20:53'),
-(1407, 'SISKA APRILIA', 'PADANG GANTING', 'Putri', 'KT.2.13', 6, 22, 80.67, 'Drs. H. Aswendi', '2022-06-22 13:21:43', '2022-06-22 13:21:43'),
-(1408, 'Fhiara Ramadhani Hartono', 'Lintau Buo', 'Putri', 'HQ. 405', 3, 12, 93.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:23:41', '2022-06-22 13:23:41'),
-(1409, 'Muhammad Abdul Karim', 'Salimpaung', 'Putra', 'HQ. 406', 3, 12, 90.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:25:33', '2022-06-22 13:25:33'),
-(1410, 'Zauhara Shaki Arraby', 'Sungayang', 'Putri', 'HQ. 407', 3, 12, 89.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:28:04', '2022-06-22 13:28:04'),
-(1411, 'REZI ILFI RAHMI', 'X KOTO', 'Putri', 'KT.2.09', 6, 22, 79.33, 'Drs. H. Aswendi', '2022-06-22 13:29:48', '2022-06-22 13:29:48'),
-(1412, 'Shubah Tauly', 'Lintau Buo', 'Putra', 'HQ. 408', 3, 12, 94.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:30:34', '2022-06-22 13:30:34'),
-(1413, 'WILDA HERMAN', 'SUNGAI TARAB', 'Putri', 'KT.2.11', 6, 22, 78.17, 'Drs. H. Aswendi', '2022-06-22 13:32:32', '2022-06-22 13:32:32'),
-(1414, 'Mursyidatul Khaira', 'Batipuh', 'Putri', 'HQ. 409', 3, 12, 91.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:32:57', '2022-06-22 13:32:57'),
-(1415, 'IRA MULYANI', 'BATIPUH', 'Putri', 'KT.2.21', 6, 22, 76.5, 'Drs. H. Aswendi', '2022-06-22 13:35:15', '2022-06-22 13:35:15'),
-(1416, 'Syarif Hidayatullah', 'Batipuh', 'Putra', 'HQ. 410', 3, 12, 93.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:35:17', '2022-06-22 13:35:17'),
-(1417, 'Naura Haninda Aulia', 'Padang Ganting', 'Putri', 'HQ. 411', 3, 12, 83.16, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:37:07', '2022-06-22 13:37:07'),
-(1418, 'DIA PUSPITA', 'TANJUNG BARU', 'Putri', 'KT.2.15', 6, 22, 75, 'Drs. H. Aswendi', '2022-06-22 13:39:00', '2022-06-22 13:39:00'),
-(1419, 'M. Fikri Fadli', 'Batipuh Selatan', 'Putra', 'HQ. 412', 3, 12, 95.83, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:39:53', '2022-06-22 13:39:53'),
-(1420, 'AULI ZAHRA', 'SALIMPAUNG', 'Putri', 'KT.2.19', 6, 22, 73.83, 'Drs. H. Aswendi', '2022-06-22 13:41:23', '2022-06-22 13:41:23'),
-(1421, 'Sabrina Muslihah', 'Tanjung Emas', 'Putri', 'HQ. 413', 3, 12, 93.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:43:39', '2022-06-22 13:43:39'),
-(1422, 'Shadiqul Karim', 'Pariangan', 'Putra', 'HQ. 414', 3, 12, 95, 'Taufik Edwarsya, S.Sos', '2022-06-22 13:46:26', '2022-06-22 13:46:26'),
-(1423, 'ASEP RAHMA PUTRA', 'TANJUNG BARU', 'Putra', 'KT.3.08', 6, 23, 95.33, 'Drs. H. Aswendi', '2022-06-22 13:51:35', '2022-06-22 13:51:35'),
-(1424, 'SYAHRUL PURNAMA', 'X KOTO', 'Putra', 'KT.3.14', 6, 23, 93.67, 'Drs. H. Aswendi', '2022-06-22 14:01:43', '2022-06-22 14:01:43'),
-(1425, 'MUHAMMAD ABDUL HAMID', 'PARIANGAN', 'Putra', 'KT.3.04', 6, 23, 92.67, 'Drs. H. Aswendi', '2022-06-22 14:03:45', '2022-06-22 14:03:45'),
-(1426, 'MUHAMMAD HAFZAN', 'RAMBATAN', 'Putra', 'KT.3.16', 6, 23, 90.83, 'Drs. H. Aswendi', '2022-06-22 14:06:21', '2022-06-22 14:06:21'),
-(1427, 'JENNY FERNANDO', 'SUNGAI TARAB', 'Putra', 'KT.3.12', 6, 23, 88.83, 'Drs. H. Aswendi', '2022-06-22 14:09:43', '2022-06-22 14:09:43'),
-(1428, 'Mufid Dhiya\'ul Haq, dkk', 'Rambatan', 'Putra', 'FQ. 26', 7, 33, 850, 'TASNIP WATI MENA, SE', '2022-06-22 14:10:24', '2022-06-22 14:10:24'),
-(1429, 'HALFARISYIH', 'LINTAU BUO UTARA', 'Putra', 'KT.3.10', 6, 23, 86.83, 'Drs. H. Aswendi', '2022-06-22 14:12:13', '2022-06-22 14:12:13'),
-(1430, 'Hamid Al Aly, dkk', 'Lima Kaum', 'Putra', 'FQ. 28', 7, 33, 535, 'TASNIP WATI MENA, SE', '2022-06-22 14:12:14', '2022-06-23 14:12:42'),
-(1431, 'Bunga Anggresia Putri', 'Tanjung Baru', 'Putri', 'HQ. 415', 3, 12, 96, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:14:26', '2022-06-22 14:14:26'),
-(1432, 'Siti Khairiyah/dkk', 'Rambatan', 'Putri', 'SQ.25', 8, 26, 79, 'AINAL MARDIAH', '2022-06-22 14:14:39', '2022-06-22 14:14:39'),
-(1433, 'SHABRI SIRAJ QOLBI HARUN', 'LINTAU BUO', 'Putra', 'KT.3.20', 6, 23, 84, 'Drs. H. Aswendi', '2022-06-22 14:15:37', '2022-06-22 14:15:37'),
-(1434, 'Nayla Zahira Zahra, dkk', 'Tanjung Baru', 'Putri', 'FQ. 25', 7, 33, 70, 'TASNIP WATI MENA, SE', '2022-06-22 14:16:55', '2022-06-22 14:50:32'),
-(1435, 'Masita, dkk', 'Batipuh Selatan', 'Putri', 'FQ. 27', 7, 33, 735, 'TASNIP WATI MENA, SE', '2022-06-22 14:19:06', '2022-06-22 14:51:18'),
-(1436, 'Annisa Naurah Azzahra', 'Pariangan', 'Putri', 'HQ. 417', 3, 12, 83, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:21:40', '2022-06-22 14:21:40'),
-(1437, 'ASROMI', 'SALIMPAUNG', 'Putra', 'KT.3.02', 6, 23, 82.67, 'Drs. H. Aswendi', '2022-06-22 14:21:45', '2022-06-22 14:21:45'),
-(1438, 'MIFTAHUL HAYATI', 'LIMA KAUM', 'Putri', 'KT.3.09', 6, 23, 85.83, 'Drs. H. Aswendi', '2022-06-22 14:25:55', '2022-06-22 14:25:55'),
-(1439, 'Ziekri Afandi', 'Lima Kaum', 'Putra', 'HQ. 418', 3, 12, 72, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:26:39', '2022-06-22 14:26:39'),
-(1440, 'HELMA RIBSI', 'SALIMPAUNG', 'Putri', 'KT.3.17', 6, 23, 83.83, 'Drs. H. Aswendi', '2022-06-22 14:29:07', '2022-06-22 14:29:07'),
-(1441, 'DINDA KURNIATI YUSRA', 'TANJUNG BARU', 'Putri', 'KT.3.07', 6, 23, 82, 'Drs. H. Aswendi', '2022-06-22 14:31:41', '2022-06-22 14:31:41'),
-(1442, 'Siti Maryam Karomah', 'Salimpaung', 'Putri', 'HQ. 419', 3, 12, 91.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:34:19', '2022-06-22 14:34:19'),
-(1443, 'Muhammad Fajri/dkk', 'Tanjung Emas', 'Putra', 'SQ.26', 8, 26, 78.75, 'AINAL MARDIAH', '2022-06-22 14:34:26', '2022-06-22 15:26:49'),
-(1444, 'Mahyarnis', 'Sungai Tarab', 'Putri', '515', 1, 5, 74.75, 'Bahrul Fahmi, S.AP', '2022-06-22 14:34:36', '2022-06-22 14:34:36'),
-(1445, 'Muhamad Yusup', 'Lintau Buo Utara', 'Putra', 'HQ. 420', 3, 12, 82.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:42:19', '2022-06-22 14:42:19'),
-(1446, 'Damirus', 'Salimpaung', 'Putra', '516', 1, 5, 79.25, 'Bahrul Fahmi, S.AP', '2022-06-22 14:44:26', '2022-06-22 14:44:26'),
-(1447, 'Shaila Nawila Hamdi', 'Lima Kaum', 'Putri', 'HQ. 421', 3, 12, 79.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:46:51', '2022-06-22 14:46:51'),
-(1448, 'FATIMAH AZZAHRA', 'KEC. LINTAU BUO', 'Putri', '215', 1, 3, 85.75, 'Rika Syafrina S.Sos', '2022-06-22 14:48:16', '2022-06-22 14:48:16'),
-(1449, 'Yunismar', 'Lintau Buo Utara', 'Putri', '517', 1, 5, 85.75, 'Bahrul Fahmi, S.AP', '2022-06-22 14:52:00', '2022-06-22 14:52:00'),
-(1450, 'RATNA LISA INDRA', 'LINTAU BUO', 'Putri', 'KT.3.05', 6, 23, 77.33, 'Drs. H. Aswendi', '2022-06-22 14:52:41', '2022-06-22 14:52:41'),
-(1451, 'Muhammad Farid', 'Sungai Tarab', 'Putra', 'HQ. 422', 3, 12, 92.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:54:29', '2022-06-22 14:54:29'),
-(1452, 'ALFIADI', 'KEC X KOTO', 'Putra', '216', 1, 3, 91, 'Rika Syafrina S.Sos', '2022-06-22 14:57:05', '2022-06-22 14:57:05'),
-(1453, 'INTAN TURSINA', 'X KOTO', 'Putri', 'KT.3.15', 6, 23, 75.33, 'Drs. H. Aswendi', '2022-06-22 14:57:47', '2022-06-22 14:57:47'),
-(1454, 'Khalisha Altaf Rana', 'Rambatan', 'Putri', 'HQ. 423', 3, 12, 98.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 14:59:59', '2022-06-22 14:59:59'),
-(1455, 'HAFIZHAH AL HUSNA', 'RAMBATAN', 'Putri', 'KT.3.19', 6, 23, 73.5, 'Drs. H. Aswendi', '2022-06-22 15:00:53', '2022-06-22 15:00:53'),
-(1456, 'Mutiara Magaski/dkk', 'Lintau Buo', 'Putri', 'SQ.27', 8, 26, 79.5, 'AINAL MARDIAH', '2022-06-22 15:01:02', '2022-06-22 15:39:01'),
-(1457, 'Azwar', 'Padang Ganting', 'Putra', '518', 1, 5, 70.5, 'Bahrul Fahmi, S.AP', '2022-06-22 15:01:32', '2022-06-22 15:01:32'),
-(1458, 'MAHWENI', 'SUNGAYANG', 'Putri', 'KT.3.11', 6, 23, 71.83, 'Drs. H. Aswendi', '2022-06-22 15:03:50', '2022-06-22 15:03:50'),
-(1459, 'Muhammad Ilyas', 'Tanjung Baru', 'Putra', 'HQ. 424', 3, 12, 98, 'Taufik Edwarsya, S.Sos', '2022-06-22 15:03:56', '2022-06-22 15:03:56'),
-(1460, 'REFKI ROMDANI', 'Salimpaung', 'Putra', 'Q. 216', 2, 7, 82, 'M.Ridwan', '2022-06-22 15:06:18', '2022-06-22 15:06:18'),
-(1461, 'HANIFATURRAHMAH', 'SUNGAI TARAB', 'Putri', 'KT.3.01', 6, 23, 70.5, 'Drs. H. Aswendi', '2022-06-22 15:06:40', '2022-06-22 15:06:40'),
-(1462, 'AILUL HASNAH', 'KEC BATIPUH', 'Putri', '217', 1, 3, 91, 'Rika Syafrina S.Sos', '2022-06-22 15:07:43', '2022-06-22 15:07:43'),
-(1463, 'Asmara Murni', 'Tanjung Emas', 'Putri', '519', 1, 5, 83, 'Bahrul Fahmi, S.AP', '2022-06-22 15:09:32', '2022-06-22 15:09:32'),
-(1464, 'MIFTAHUL  JANNAH', 'Lima Kaum', 'Putri', 'Q. 215', 2, 7, 88, 'M.Ridwan', '2022-06-22 15:10:14', '2022-06-22 15:10:14'),
-(1465, 'Intan Novia Melinda', 'Lintau Buo Utara', 'Putri', 'HQ. 425', 3, 12, 96.83, 'Taufik Edwarsya, S.Sos', '2022-06-22 15:10:43', '2022-06-22 15:10:43'),
-(1466, 'PIPIT TRIANI', 'Tanjung Emas', 'Putri', 'Q. 217', 2, 7, 81.5, 'M.Ridwan', '2022-06-22 15:12:48', '2022-06-22 15:12:48'),
-(1467, 'Muhammad Altaf/dkk', 'Rambatan', 'Putra', 'SQ.28', 8, 26, 81.25, 'AINAL MARDIAH', '2022-06-22 15:18:09', '2022-06-22 15:23:23'),
-(1468, 'Syahreza Pasha', 'Rambatan', 'Putra', 'HQ. 426', 3, 12, 96.5, 'Taufik Edwarsya, S.Sos', '2022-06-22 15:18:29', '2022-06-22 15:18:29'),
-(1469, 'FAUZI WIRAHADI', 'KEC SUNGAI TARAB', 'Putra', '218', 1, 3, 86, 'Rika Syafrina S.Sos', '2022-06-22 15:19:31', '2022-06-22 15:19:31'),
-(1470, 'YOPI ANDRIVO', 'BATIPUH', 'Putra', 'KT.4.08', 6, 24, 94.67, 'Drs. H. Aswendi', '2022-06-22 15:20:13', '2022-06-22 15:20:13'),
-(1471, 'Zainal', 'Tanjung Emas', 'Putra', '520', 1, 5, 79, 'Bahrul Fahmi, S.AP', '2022-06-22 15:20:28', '2022-06-22 15:20:28'),
-(1472, 'AQILA PRATAMA', 'Lima Kaum', 'Putra', 'Q. 218', 2, 7, 93.5, 'M.Ridwan', '2022-06-22 15:22:18', '2022-06-22 15:22:18'),
-(1473, 'Suci Aulia Putri', 'Batipuh Selatan', 'Putri', 'HQ. 427', 3, 12, 93, 'Taufik Edwarsya, S.Sos', '2022-06-22 15:24:43', '2022-06-22 15:24:43'),
-(1474, 'IRVAN ANUGRAH', 'TANJUNG EMAS', 'Putra', 'KT.4.10', 6, 24, 92.83, 'Drs. H. Aswendi', '2022-06-22 15:25:30', '2022-06-22 15:25:30'),
-(1475, 'DIAN PURNAMA', 'LINTAU BUO', 'Putra', 'KT.4.18', 6, 24, 91.5, 'Drs. H. Aswendi', '2022-06-22 15:27:47', '2022-06-22 15:27:47'),
-(1476, 'ICHA FEBRIANTI', 'KEC RAMBATAN', 'Putri', '219', 1, 3, 83.5, 'Rika Syafrina S.Sos', '2022-06-22 15:28:56', '2022-06-22 15:28:56'),
-(1477, 'Rosnawati', 'Sungayang', 'Putri', '521', 1, 5, 67, 'Bahrul Fahmi, S.AP', '2022-06-22 15:29:19', '2022-06-22 15:29:19'),
-(1478, 'FELAWATI', 'LIMA KAUM', 'Putri', 'KT.4.21', 6, 24, 92, 'Drs. H. Aswendi', '2022-06-22 15:30:21', '2022-06-22 15:30:21'),
-(1479, 'Rayhan Elfirdausi Afandi', 'Tanjung Emas', 'Putra', 'HQ. 428', 3, 12, 95.66, 'Taufik Edwarsya, S.Sos', '2022-06-22 15:30:21', '2022-06-22 15:30:21'),
-(1480, 'MUHAMMAD FAKHRI', 'Sungai Tarab', 'Putra', 'Q. 220', 2, 7, 78, 'M.Ridwan', '2022-06-22 15:30:35', '2022-06-22 15:30:35'),
-(1481, 'MIFTAHUL HIDAYANA', 'SALIMPAUNG', 'Putri', 'KT.4.15', 6, 24, 90.33, 'Drs. H. Aswendi', '2022-06-22 15:32:30', '2022-06-22 15:32:30'),
-(1482, 'DENI RAHMAN', 'SUNGAI TARAB', 'Putri', 'KT.4.09', 6, 24, 88.67, 'Drs. H. Aswendi', '2022-06-22 15:34:32', '2022-06-22 15:34:32'),
-(1483, 'ZALFA ARIANI', 'Salimpaung', 'Putri', 'Q. 221', 2, 7, 78.5, 'M.Ridwan', '2022-06-22 15:37:12', '2022-06-22 15:37:12'),
-(1484, 'Sariman', 'Batipuh', 'Putra', '522', 1, 5, 87.75, 'Bahrul Fahmi, S.AP', '2022-06-22 15:38:41', '2022-06-22 15:38:41'),
-(1485, 'MUHAMMAD RAFI RAMADHAN', 'KEC BATIPUH', 'Putra', '220', 1, 3, 89.25, 'Rika Syafrina S.Sos', '2022-06-22 15:39:32', '2022-06-22 15:39:32'),
-(1486, 'MUHAMMAD FACHRI', 'Lintau Buo Utara', 'Putra', 'Q. 222', 2, 7, 95.5, 'M.Ridwan', '2022-06-22 15:48:00', '2022-06-22 15:48:00'),
-(1487, 'AULIA FARIHA JANNATI', 'KEC LINTAU BUO UTARA', 'Putri', '221', 1, 3, 89, 'Rika Syafrina S.Sos', '2022-06-22 15:48:07', '2022-06-22 15:48:07'),
-(1488, 'Nurma', 'Padang Ganting', 'Putri', '523', 1, 5, 78.25, 'Bahrul Fahmi, S.AP', '2022-06-22 15:48:31', '2022-06-22 15:48:31'),
-(1489, 'Kasmar', 'Pariangan', 'Putra', '524', 1, 5, 86.5, 'Bahrul Fahmi, S.AP', '2022-06-22 16:32:28', '2022-06-22 16:32:28'),
-(1490, 'EFTA FITRY', 'Tanjung Baru', 'Putri', 'Q. 223', 2, 7, 84, 'M.Ridwan', '2022-06-22 16:32:37', '2022-06-22 16:32:37'),
-(1491, 'DHAIFULLAH NAUFAL', 'KEC LINTAU BUO UTARA', 'Putra', '222', 1, 3, 92, 'Rika Syafrina S.Sos', '2022-06-22 16:38:49', '2022-06-22 16:38:49'),
-(1492, 'Sri Hastuti', 'Lama Kaum', 'Putri', '525', 1, 5, 77.5, 'Bahrul Fahmi, S.AP', '2022-06-22 16:39:54', '2022-06-22 16:39:54'),
-(1493, 'HABIB SIDDIQ', 'Rambatan', 'Putra', 'Q. 224', 2, 7, 87, 'M.Ridwan', '2022-06-22 16:42:54', '2022-06-22 16:42:54'),
-(1494, 'SAGITA MATADYNA F', 'Rambatan', 'Putri', 'Q. 225', 2, 7, 86.5, 'M.Ridwan', '2022-06-22 16:49:36', '2022-06-22 16:49:36'),
-(1495, 'MUSWARNI', 'KEC X KOTO', 'Putri', '223', 1, 3, 88.25, 'Rika Syafrina S.Sos', '2022-06-22 16:50:36', '2022-06-22 16:50:36'),
-(1496, 'Sabri J', 'Lintau Buo', 'Putra', '526', 1, 5, 74, 'Bahrul Fahmi, S.AP', '2022-06-22 16:50:53', '2022-06-22 16:50:53'),
-(1497, 'IMAM HABIBI AL MASNI', 'Pariangan', 'Putra', 'Q. 226', 2, 7, 86.5, 'M.Ridwan', '2022-06-22 16:57:34', '2022-06-22 16:57:34'),
-(1498, 'Yetti Yesmi', 'Lintau Buo', 'Putri', '527', 1, 5, 86, 'Bahrul Fahmi, S.AP', '2022-06-22 16:58:43', '2022-06-22 16:58:43'),
-(1499, 'BAHRUL ULUM, MS', 'KEC LIMA KAUM', 'Putra', '224', 1, 3, 91, 'Rika Syafrina S.Sos', '2022-06-22 17:02:22', '2022-06-22 17:02:22'),
-(1500, 'APRILIA DWI ANGELITA', 'Batupuh Selatan', 'Putri', 'Q. 227', 2, 7, 82.5, 'M.Ridwan', '2022-06-22 17:04:56', '2022-06-22 17:08:35'),
-(1501, 'Muslim', 'Sungayang', 'Putra', '528', 1, 5, 76.5, 'Bahrul Fahmi, S.AP', '2022-06-22 17:07:08', '2022-06-22 17:07:08'),
-(1502, 'IRMA SYAFITRI', 'KEC TANJUNG EMAS', 'Putri', '225', 1, 3, 90.5, 'Rika Syafrina S.Sos', '2022-06-22 17:10:30', '2022-06-22 17:10:30'),
-(1503, 'HAFIZH ZULKARIM FAHMI', 'Tanjung Emas', 'Putra', 'Q. 228', 2, 7, 82, 'M.Ridwan', '2022-06-22 17:13:39', '2022-06-22 17:13:39'),
-(1504, 'CHATERINA BUNGA RAMADHANI', 'LINTAU BUO', 'Putri', 'KT.4.07', 6, 24, 87.17, 'Drs. H. Aswendi', '2022-06-22 17:19:23', '2022-06-22 17:19:23'),
-(1505, 'KHAIRI RAMADHANI / FADLI SAPUTRA HIDAYAT', 'BATIPUH', 'Putra', 'KJ. 08', 9, 27, 68.5, 'MIFTA NOVI, S.Ag', '2022-06-22 17:22:02', '2022-06-22 17:22:02'),
-(1506, 'RAISA RAMDHANI', 'BATIPUH', 'Putri', 'KT.4.05', 6, 24, 85.67, 'Drs. H. Aswendi', '2022-06-22 17:22:54', '2022-06-22 17:22:54'),
-(1507, 'MUHAMMAD NOUVAL / ANDREAN MAHERZA', 'PARIANGAN', 'Putra', 'KJ. 09', 9, 27, 66, 'MIFTA NOVI, S.Ag', '2022-06-22 17:23:52', '2022-06-22 17:23:52'),
-(1508, 'HAFIDZ HANAFI / SULTAN KEANNU CHANIAGO', 'SALIMPAUNG', 'Putra', 'KJ. 10', 9, 27, 65, 'MIFTA NOVI, S.Ag', '2022-06-22 17:25:24', '2022-06-22 17:25:24'),
-(1509, 'FATIMAH SALSABILA', 'TANJUNG EMAS', 'Putri', 'KT.4.17', 6, 24, 83.83, 'Drs. H. Aswendi', '2022-06-22 17:26:10', '2022-06-22 17:26:10'),
-(1510, 'RIVO / AKMAD ZAKY', 'X KOTO', 'Putra', 'KJ. 11', 9, 27, 64.5, 'MIFTA NOVI, S.Ag', '2022-06-22 17:27:01', '2022-06-22 17:27:01'),
-(1511, 'MUHAMMAD ROIS / MUHAMMAD LUTHFI OKTARIAN', 'TANJUNG EMAS', 'Putra', 'KJ. 12', 9, 27, 65, 'MIFTA NOVI, S.Ag', '2022-06-22 17:28:34', '2022-06-22 17:28:34'),
-(1512, 'ANGGREA SUZANA', 'X KOTO', 'Putri', 'KT.4.01', 6, 24, 82.5, 'Drs. H. Aswendi', '2022-06-22 17:28:58', '2022-06-22 17:28:58'),
-(1513, 'NOVA REZA', 'KEC TANJUNG BARU', 'Putri', '227', 1, 3, 85.5, 'Rika Syafrina S.Sos', '2022-06-22 17:29:12', '2022-06-22 17:29:12'),
-(1514, 'RAHIM ANANDA / MUHAMMAD IRFAN MUFIT', 'SUNGAI TARAB', 'Putra', 'KJ. 13', 9, 27, 65.8, 'MIFTA NOVI, S.Ag', '2022-06-22 17:30:15', '2022-06-22 17:30:15'),
-(1515, 'Hafizul Haq', 'X Koto', 'Putra', 'HQ. 2 08', 17, 10, 91.83, 'Joni Roza, S.Ag', '2022-06-22 17:31:53', '2022-06-22 18:26:10'),
-(1516, 'Mukhlisah Syahidah', 'Kec Rambatan', 'Putri', 'IQ 21', 11, 30, 70.5, 'Dasrizal, A.Ma', '2022-06-22 17:32:15', '2022-06-22 17:32:15'),
-(1517, 'ANDREKI ARIESTA / ZULFAHMI KHAIRI', 'LIMA KAUM', 'Putra', 'KJ. 14', 9, 27, 67.5, 'MIFTA NOVI, S.Ag', '2022-06-22 17:32:31', '2022-06-22 17:32:31'),
-(1518, 'SARIFAH ZAHARAN', 'RAMBATAN', 'Putri', 'KT.4.13', 6, 24, 81.17, 'Drs. H. Aswendi', '2022-06-22 17:32:45', '2022-06-22 17:32:45'),
-(1519, 'Amelia Rahma', 'Lima Kaum', 'Putri', 'HQ. 2 01', 17, 10, 93.75, 'Joni Roza, S.Ag', '2022-06-22 17:36:32', '2022-06-22 18:27:01'),
-(1520, 'YUNI KARTIKA SARI', 'BATIPUH SELATAN', 'Putri', 'KT.4.19', 6, 24, 80, 'Drs. H. Aswendi', '2022-06-22 17:36:47', '2022-06-22 17:36:47'),
-(1521, 'Mutia Wahyuni', 'Kec. Batipuh', 'Putri', 'IQ 01', 11, 30, 70, 'Dasrizal, A.Ma', '2022-06-22 17:38:26', '2022-06-22 17:38:26'),
-(1522, 'Taufik Illahi', 'Kec. Pariangan', 'Putra', 'IQ 14', 11, 30, 66.5, 'Dasrizal, A.Ma', '2022-06-22 17:39:48', '2022-06-22 17:39:48'),
-(1523, 'Ulfa Diana', 'Kec. Pariangan', 'Putri', 'IQ 17', 11, 30, 67.5, 'Dasrizal, A.Ma', '2022-06-22 17:40:53', '2022-06-22 17:40:53'),
-(1524, 'Syahrul Isman', 'Kec. Rambatan', 'Putra', 'IQ 06', 11, 30, 67.5, 'Dasrizal, A.Ma', '2022-06-22 17:42:03', '2022-06-22 17:42:03'),
-(1525, 'Rindi Ramadhani', 'Kec. Lima Kaum', 'Putra', 'IQ 10', 11, 30, 75, 'Dasrizal, A.Ma', '2022-06-22 17:43:15', '2022-06-22 17:43:15'),
-(1526, 'RESTU ANNISA', 'LINTAU BUO UTARA', 'Putri', 'KT.4.11', 6, 24, 78.5, 'Drs. H. Aswendi', '2022-06-22 17:44:35', '2022-06-22 17:44:35'),
-(1527, 'ABDUL RAHMAN.', 'KEC PADANG GANTING', 'Putra', '226', 1, 3, 84, 'Rika Syafrina S.Sos', '2022-06-22 17:44:37', '2022-06-22 17:44:37'),
-(1528, 'Naifatur Rahmi', 'Padang Ganting', 'Putri', 'KS. 127', 10, 29, 82, 'Arfon', '2022-06-22 17:49:04', '2022-06-22 17:49:04'),
-(1529, 'Aulia Salsabila', 'Kec. Tanjung Emas', 'Putri', 'IQ 23', 11, 30, 66.5, 'Dasrizal, A.Ma', '2022-06-22 17:49:34', '2022-06-22 17:49:34'),
-(1530, 'FIRZA RAHMADHINI', 'TANJUNG BARU', 'Putri', 'KT.4.03', 6, 24, 76.5, 'Drs. H. Aswendi', '2022-06-22 17:50:30', '2022-06-22 17:50:30'),
-(1531, 'Dwi Rahma Fadia', 'Kec. Lintau Buo', 'Putri', 'IQ 03', 11, 30, 65.5, 'Dasrizal, A.Ma', '2022-06-22 17:51:02', '2022-06-22 17:51:55'),
-(1532, 'Muhammad Hanif', 'Pariangan', 'Putra', 'KS. 126', 10, 29, 83, 'Arfon', '2022-06-22 17:52:46', '2022-06-22 17:52:46'),
-(1533, 'Efriyan Rahmatdillah', 'Lintau Buo Utara', 'Putra', 'HQ. 2 02', 17, 10, 75.915, 'Joni Roza, S.Ag', '2022-06-22 17:53:09', '2022-06-22 18:26:43'),
-(1534, 'M. Yazid Permana', 'Kec. Sungayang', 'Putra', 'IQ 02', 11, 30, 66.5, 'Dasrizal, A.Ma', '2022-06-22 17:53:57', '2022-06-22 17:53:57'),
-(1535, 'May Sarah', 'Lima Kaum', 'Putri', 'KS. 125', 10, 29, 74, 'Arfon', '2022-06-22 17:54:29', '2022-06-22 17:54:29'),
-(1536, 'Naila Azakia Putri', 'Lintau Buo Utara', 'Putri', 'HQ. 2 03', 17, 10, 84.83, 'Joni Roza, S.Ag', '2022-06-22 18:06:19', '2022-06-22 18:27:36'),
-(1537, 'Muhammad Qalbina Azwir', 'Lintau Buo', 'Putra', 'HQ. 2 04', 17, 10, 87.165, 'Joni Roza, S.Ag', '2022-06-22 18:08:20', '2022-06-22 18:26:32'),
-(1538, 'RANDA EKA PUTRA', 'SALIMPAUNG', 'Putra', 'KT.4.20', 6, 24, 89.83, 'Drs. H. Aswendi', '2022-06-22 18:09:08', '2022-06-22 18:09:08'),
-(1539, 'Sabrina Annasya', 'Rambatan', 'Putri', 'HQ. 2 05', 17, 10, 91.415, 'Joni Roza, S.Ag', '2022-06-22 18:10:32', '2022-06-22 18:27:21'),
-(1540, 'Muhammad Hafizh Al Aziz', 'Tanjung Baru', 'Putra', 'HQ. 2 06', 17, 10, 93.5, 'Joni Roza, S.Ag', '2022-06-22 18:12:37', '2022-06-22 18:12:37'),
-(1541, 'FERRI SEPTIAWAN', 'PADANG GANTING', 'Putra', 'KT.4.14', 6, 24, 87.83, 'Drs. H. Aswendi', '2022-06-22 18:12:59', '2022-06-22 18:12:59'),
-(1542, 'Sisi Mulya', 'Lintau Buo', 'Putri', 'HQ. 2 07', 17, 10, 61.665, 'Joni Roza, S.Ag', '2022-06-22 18:14:35', '2022-06-22 18:27:53'),
-(1543, 'Nadiatul Khaira', 'Batipuh', 'Putri', 'HQ. 2 09', 17, 10, 88.83, 'Joni Roza, S.Ag', '2022-06-22 18:16:28', '2022-06-22 19:46:20'),
-(1544, 'Muhammad Khalilurrahmian', 'Kec. Sungai Tarab', 'Putra', 'IQ 12', 11, 30, 68.5, 'Dasrizal, A.Ma', '2022-06-22 18:17:44', '2022-06-22 18:17:44'),
-(1545, 'UZIL FERNANDES', 'LINTAU BUO UTARA', 'Putra', 'KT.4.12', 6, 24, 86, 'Drs. H. Aswendi', '2022-06-22 18:17:51', '2022-06-22 18:17:51'),
-(1546, 'Habib Burrahman', 'Batipuh', 'Putra', 'HQ. 2 10', 17, 10, 82.25, 'Joni Roza, S.Ag', '2022-06-22 18:18:04', '2022-06-22 18:18:04'),
-(1547, 'Suci Febriani', 'Pariangan', 'Putri', 'HQ. 2 11', 17, 10, 90.415, 'Joni Roza, S.Ag', '2022-06-22 18:19:51', '2022-06-22 18:19:51'),
-(1548, 'Rahmad Hidayat', 'Kec. Salimpaung', 'Putra', 'IQ 18', 11, 30, 72, 'Dasrizal, A.Ma', '2022-06-22 18:19:57', '2022-06-22 18:19:57'),
-(1549, 'MUHAMMAD FAKHRI AHSAN', 'SUNGAI TARAB', 'Putra', 'KT.4.02', 6, 24, 84.67, 'Drs. H. Aswendi', '2022-06-22 18:21:02', '2022-06-22 18:23:53'),
-(1550, 'Aqil Emaln Maulana', 'Kec. Padang Ganting', 'Putra', 'IQ 24', 11, 30, 64.5, 'Dasrizal, A.Ma', '2022-06-22 18:21:03', '2022-06-22 18:29:29'),
-(1551, 'Muhammad Yusuf Al Fajri', 'Sungayang', 'Putra', 'HQ. 2 12', 17, 10, 88.665, 'Joni Roza, S.Ag', '2022-06-22 18:21:28', '2022-06-22 18:25:52'),
-(1552, 'Hadhiyatul Amni Ali', 'Kec. padang ganting', 'Putri', 'IQ 07', 11, 30, 67.5, 'Dasrizal, A.Ma', '2022-06-22 18:22:22', '2022-06-22 18:31:02'),
-(1553, 'Ryfan Febrianto', 'Kec. Tj Baru', 'Putra', 'IQ 20', 11, 30, 64.5, 'Dasrizal, A.Ma', '2022-06-22 18:23:27', '2022-06-22 18:30:15'),
-(1554, 'Afdillah Ramadhan', 'Kec Lintau Buo Utara', 'Putra', 'IQ 08', 11, 30, 65, 'Dasrizal, A.Ma', '2022-06-22 18:24:28', '2022-06-22 18:30:40'),
-(1555, 'Mei liya Wulan Dari', 'Kec. Lintau Buo Utara', 'Putri', 'IQ 05', 11, 30, 68, 'Dasrizal, A.Ma', '2022-06-22 18:25:51', '2022-06-22 18:31:25'),
-(1556, 'HENDRA FADLI', 'RAMBATAN', 'Putra', 'KT.4.16', 6, 24, 0, 'Drs. H. Aswendi', '2022-06-22 18:27:25', '2022-06-22 18:27:25'),
-(1557, 'Rifa Geta Sila', 'Batipuh Selatan', 'Putri', 'HQ. 2 13', 17, 10, 81.165, 'Joni Roza, S.Ag', '2022-06-22 18:27:45', '2022-06-22 18:28:10'),
-(1558, 'Sirajul Huda', 'Lima Kaum', 'Putra', 'HQ. 2 14', 17, 10, 90.75, 'Joni Roza, S.Ag', '2022-06-22 18:29:49', '2022-06-22 18:30:34'),
-(1559, 'MUHAMMAD INGGRA MUKHTAR', 'LIMA KAUM', 'Putra', 'KT.4.04', 6, 24, 81.33, 'Drs. H. Aswendi', '2022-06-22 18:31:13', '2022-06-22 18:31:13'),
-(1560, 'Rara Afifah', 'Salimpaung', 'Putri', 'HQ. 2 15', 17, 10, 81.415, 'Joni Roza, S.Ag', '2022-06-22 18:32:10', '2022-06-22 18:34:25'),
-(1561, 'Khiratil Habaib', 'Kec. X Koto', 'Putri', 'IQ 11', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:32:48', '2022-06-22 18:32:48'),
-(1562, 'RIKO RAHMAD PUTRA', 'X KOTO', 'Putra', 'KT.4.06', 6, 24, 79.83, 'Drs. H. Aswendi', '2022-06-22 18:33:34', '2022-06-22 18:33:34'),
-(1563, 'Muna Dirma', 'Kec. Lima Kaum', 'Putri', 'IQ 09', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:33:41', '2022-06-22 18:33:41'),
-(1564, 'Aseptiyo Ferly Putra', 'Kec. Tanjung Emas', 'Putra', 'IQ 22', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:34:56', '2022-06-22 18:34:56'),
-(1565, 'Didi Kurnia', 'Kec. Lintau Buo', 'Putra', 'IQ 16', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:35:50', '2022-06-22 18:35:50'),
-(1566, 'Rudi Reviyanto', 'Pariangan', 'Putra', 'HQ. 2 16', 17, 10, 64, 'Joni Roza, S.Ag', '2022-06-22 18:36:30', '2022-06-22 18:39:12'),
-(1567, 'Rinda Rahayu', 'Kec. Sungayang', 'Putri', 'IQ 25', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:36:46', '2022-06-22 18:36:46'),
-(1568, 'Hasnirda Ayunda', 'Kec. Salimpaung', 'Putri', 'IQ 13', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:38:47', '2022-06-22 18:38:47'),
-(1569, 'Hafizah', 'Kec. Batipuh Selatan', 'Putri', 'IQ 15', 11, 30, 0, 'Dasrizal, A.Ma', '2022-06-22 18:40:12', '2022-06-22 18:40:12'),
-(1570, 'Zahra Hafizhatur Rahma', 'Tanjung Baru', 'Putri', 'HQ. 2 17', 17, 10, 75.665, 'Joni Roza, S.Ag', '2022-06-22 18:54:22', '2022-06-22 18:56:10'),
-(1571, 'Hamid', 'Tanjung Emas', 'Putra', 'HQ. 2 18', 17, 10, 92.25, 'Joni Roza, S.Ag', '2022-06-22 18:59:42', '2022-06-22 19:00:54'),
-(1572, 'Mela Amelia Santika', 'Sungai Tarab', 'Putri', 'HQ. 2 19', 17, 10, 76.915, 'Joni Roza, S.Ag', '2022-06-22 19:03:04', '2022-06-22 19:03:04'),
-(1573, 'Nabillah Fikriyah Erfa', 'Lima Kaum', 'Putri', 'TT. 215', 4, 16, 89.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:08:23', '2022-06-22 19:08:23'),
-(1574, 'Ismail Sukmana', 'Sungayang', 'Putra', 'TT. 216', 4, 16, 89, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:10:31', '2022-06-22 19:10:31'),
-(1575, 'Sara Weltasya', 'Sungai Tarab', 'Putri', 'TT. 217', 4, 16, 80.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:12:18', '2022-06-22 19:13:46'),
-(1577, 'Fatur Rahman Zahri', 'Rambatan', 'Putra', 'TT. 218', 4, 16, 91.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:15:27', '2022-06-22 19:15:27'),
-(1578, 'Rara Rusika', 'Padang Ganting', 'Putri', 'TT. 219', 4, 16, 87.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:18:05', '2022-06-22 19:18:05'),
-(1579, 'Fabil Khairul Anam', 'X Koto', 'Putra', 'TT. 220', 4, 16, 70, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:20:24', '2022-06-22 19:20:24'),
-(1581, 'Iffah Sharliz Munisa', 'Tanjung Baru', 'Putri', 'TT. 221', 4, 16, 80.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:23:09', '2022-06-22 19:24:33'),
-(1586, 'Wahyu Ramadhan', 'Lima Kaum', 'Putra', 'TT. 222', 4, 16, 93.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:43:03', '2022-06-23 14:21:49'),
-(1587, 'Fiki Sahira Farhah', 'Lintau Buo Utara', 'Putri', 'TT. 223', 4, 16, 90.5, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:50:32', '2022-06-22 19:51:34'),
-(1588, 'Muhammad Genta', 'Batipuh', 'Putra', 'TT. 224', 4, 16, 94.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:53:45', '2022-06-22 19:54:38'),
-(1589, 'Nabila Asy Syfa', 'Rambatan', 'Putri', 'TT. 225', 4, 16, 91.75, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:56:22', '2022-06-22 19:56:22'),
-(1590, 'M. Arsyi Nurhadi', 'Lintau Buo', 'Putra', 'TT. 226', 4, 16, 86, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 19:58:18', '2022-06-22 19:58:18'),
-(1591, 'Hafid Arsyad', 'Sungai Tarab', 'Putra', 'KS. 124', 10, 29, 90, 'Arfon', '2022-06-22 19:59:30', '2022-06-22 19:59:30'),
-(1592, 'Syaira Putri Zahra', 'Salimpaung', 'Putri', 'TT. 227', 4, 16, 88.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 20:00:25', '2022-06-22 20:00:25'),
-(1593, 'Ifkar Rasyid', 'Lintau Buo Utara', 'Putra', 'KS. 122', 10, 29, 94, 'Arfon', '2022-06-22 20:01:45', '2022-06-22 20:01:45'),
-(1594, 'Althafahd Varen', 'Sungai Tarab', 'Putra', 'TT. 228', 4, 16, 88.25, 'Roky Ardinal, S.Sos, M.Pd', '2022-06-22 20:02:28', '2022-06-22 20:02:28'),
-(1595, 'Fadhilatul Rahmi', 'Batipuh', 'Putri', 'KS. 123', 10, 29, 85, 'Arfon', '2022-06-22 20:04:52', '2022-06-22 20:04:52'),
-(1596, 'Mistahul Rizki', 'Tanjung Baru', 'Putri', 'KS. 121', 10, 29, 57, 'Arfon', '2022-06-22 20:47:40', '2022-06-22 20:47:40'),
-(1597, 'Sirajul Afkar', 'Batipuh Selatan', 'Putra', 'KS. 120', 10, 29, 61, 'Arfon', '2022-06-22 21:13:25', '2022-06-22 21:13:25'),
-(1598, 'Nurul Fakhira Ridwan', 'Sungayang', 'Putri', 'KS. 119', 10, 29, 48, 'Arfon', '2022-06-22 21:15:55', '2022-06-22 21:15:55'),
-(1601, 'AANG SUHENDRA', 'Lima Kaum', 'Putra', 'Q. 316', 2, 8, 92, 'Zawil Husaini, S.Ag', '2022-06-22 21:26:01', '2022-06-22 21:26:01'),
-(1602, 'NOVIA PERMATA SARI', 'Batipuh Selatan', 'Putri', 'Q. 317', 2, 8, 84, 'Zawil Husaini, S.Ag', '2022-06-22 21:33:47', '2022-06-22 21:33:47'),
-(1603, 'ANDRE SETIAWAN', 'Pariangan', 'Putra', 'Q. 318', 2, 8, 92, 'Zawil Husaini, S.Ag', '2022-06-22 21:41:49', '2022-06-22 21:41:49'),
-(1605, 'SITI MAYANG SARI', 'Lintau Buo Utara', 'Putri', 'Q. 325', 2, 8, 87, 'Zawil Husaini, S.Ag', '2022-06-22 22:43:53', '2022-06-22 22:43:53'),
-(1606, 'RIni', 'Batipuh Selatan', 'Putri', '323', 1, 4, 60, 'Ridho Saputra S.Kom', '2022-06-22 21:58:56', '2022-06-22 21:58:56'),
-(1607, 'Rahmad  Hidayat', 'Rambatan', 'Putra', 'KS. 118', 10, 29, 62, 'Arfon', '2022-06-22 22:02:27', '2022-06-22 22:02:27'),
-(1608, 'LERI FRANSISKA', 'Sungai Tarab', 'Putri', 'Q. 321', 2, 8, 91, 'Zawil Husaini, S.Ag', '2022-06-22 22:03:06', '2022-06-22 22:03:06'),
-(1609, 'Melly Kartika', 'Sungai Tarab', 'Putri', 'KS. 117', 10, 29, 52, 'Arfon', '2022-06-22 22:05:20', '2022-06-22 22:05:20'),
-(1610, 'Hadid Asfar', 'Salimpaung', 'Putra', 'KS. 116', 10, 29, 75, 'Arfon', '2022-06-22 22:07:48', '2022-06-22 22:07:48'),
-(1611, 'Iswahyudi', 'Sungayang', 'Putra', '324', 1, 4, 79.5, 'Ridho Saputra S.Kom', '2022-06-22 22:10:06', '2022-06-22 22:10:06'),
-(1613, 'Feni Mardika', 'Batipuh', 'Putri', '325', 1, 4, 87.25, 'Ridho Saputra S.Kom', '2022-06-22 22:20:53', '2022-06-22 22:20:53'),
-(1615, 'RANDI PERDANA PUTRA', 'Batipuh Selatan', 'Putra', 'Q. 324', 2, 8, 95, 'Zawil Husaini, S.Ag', '2022-06-22 22:23:42', '2022-06-22 22:26:29'),
-(1616, 'Muhammad Andika', 'Salimpaung', 'Putra', '326', 1, 4, 75.75, 'Ridho Saputra S.Kom', '2022-06-22 22:30:50', '2022-06-22 22:30:50'),
-(1617, 'RINI.', 'Sungayang', 'Putri', 'Q.323', 2, 8, 79, 'Zawil Husaini, S.Ag', '2022-06-22 22:31:20', '2022-06-22 22:31:20'),
-(1618, 'Riska Wahyuni', 'X Koto', 'Putri', '327', 1, 4, 81, 'Ridho Saputra S.Kom', '2022-06-22 22:41:00', '2022-06-22 22:41:00'),
-(1619, 'Hasnul Fikri Z', 'Batipuh Selatan', 'Putra', 'HQ.5.16', 3, 13, 64.83, 'Yusral', '2022-06-22 22:42:22', '2022-06-22 22:42:22'),
-(1620, 'USWATUN HASANAH', 'Batipuh', 'Putri', 'Q. 305', 2, 8, 87, 'Zawil Husaini, S.Ag', '2022-06-21 21:40:32', '2022-06-21 21:40:32'),
-(1621, 'Abdul Lathif', 'Tanjung Baru', 'Putra', 'HQ.5.18', 3, 13, 68.66, 'Yusral', '2022-06-22 22:47:01', '2022-06-22 22:47:01'),
-(1622, 'Khairatil Madani', 'Batipuh', 'Putri', 'HQ.5.17', 3, 13, 59.66, 'Yusral', '2022-06-22 22:51:56', '2022-06-22 22:51:56'),
-(1623, 'Yuliardi', 'Sungai Tarab', 'Putra', '328', 1, 4, 85.5, 'Ridho Saputra S.Kom', '2022-06-22 22:53:43', '2022-06-22 22:53:43'),
-(1624, 'AFRIKARDO', 'Salimpaung', 'Putra', 'Q. 326', 2, 8, 83.5, 'Zawil Husaini, S.Ag', '2022-06-22 22:54:35', '2022-06-22 22:54:35'),
-(1625, 'Asilah Nurliza', 'Pariangan', 'Putri', 'HQ.5.19', 3, 13, 95.66, 'Yusral', '2022-06-22 22:55:29', '2022-06-22 22:55:29'),
-(1626, 'Khaliliul Karim', 'Pariangan', 'Putra', 'HQ.5.20', 3, 13, 53.66, 'Yusral', '2022-06-22 22:58:58', '2022-06-22 22:58:58'),
-(1627, 'YOSI NOFITA SARI', 'Lima Kaum', 'Putri', 'Q. 327', 2, 8, 93, 'Zawil Husaini, S.Ag', '2022-06-22 23:03:35', '2022-06-22 23:03:35'),
-(1628, 'Hanifah', 'Batipuh Selatan', 'Putri', 'HQ.5.21', 3, 13, 76.33, 'Yusral', '2022-06-22 23:03:55', '2022-06-22 23:03:55'),
-(1629, 'Muhammad Syukron', 'Salimpaung', 'Putra', 'HQ.5.22', 3, 13, 82.33, 'Yusral', '2022-06-22 23:06:52', '2022-06-22 23:06:52'),
-(1630, 'M. Bayu Kusuma', 'Sungayang', 'Putra', 'HQ.5.24', 3, 13, 60, 'Yusral', '2022-06-22 23:10:14', '2022-06-22 23:10:14'),
-(1631, 'Dilla Yuliatika', 'Kec. Sungai Tarab', 'Putri', 'TT.315', 4, 17, 86.75, 'Rina Hastati, S.Sos', '2022-06-22 23:12:22', '2022-06-22 23:12:22'),
-(1632, 'Muhammad Abdul Aziz', 'Lintau Buo Utara', 'Putra', 'HQ.5.26', 3, 13, 92.5, 'Yusral', '2022-06-22 23:13:27', '2022-06-22 23:13:27'),
-(1633, 'Syaifullah Hamdani', 'Kec. Pariangan', 'Putra', 'TT.316', 4, 17, 83, 'Rina Hastati, S.Sos', '2022-06-22 23:16:23', '2022-06-22 23:31:00'),
-(1634, 'Musnimar', 'Kec. X Koto', 'Putri', 'TT.317', 4, 17, 86.5, 'Rina Hastati, S.Sos', '2022-06-22 23:23:03', '2022-06-22 23:23:03'),
-(1635, 'Alfi Saldi', 'Kec. Salimpaung', 'Putra', 'TT.318', 4, 17, 76.5, 'Rina Hastati, S.Sos', '2022-06-22 23:27:22', '2022-06-22 23:27:22'),
-(1636, 'Habibah Syakira', 'Kec. Pariangan', 'Putri', 'TT.319', 4, 17, 79.75, 'Rina Hastati, S.Sos', '2022-06-22 23:30:06', '2022-06-22 23:30:06'),
-(1637, 'Fahrurozy', 'Kec. Batipuh Selatan', 'Putra', 'TT.320', 4, 17, 89.5, 'Rina Hastati, S.Sos', '2022-06-22 23:32:54', '2022-06-22 23:32:54'),
-(1638, 'Anugerah Lailatus Sakinah', 'Kec. Lintau Buo Utara', 'Putri', 'TT.321', 4, 17, 92.5, 'Rina Hastati, S.Sos', '2022-06-22 23:35:40', '2022-06-22 23:35:40'),
-(1639, 'Azka Novendra', 'Kec. Lintau Buo Utara', 'Putra', 'TT.322', 4, 17, 92.25, 'Rina Hastati, S.Sos', '2022-06-22 23:37:28', '2022-06-22 23:37:28'),
-(1640, 'Elisa Febria Putri', 'Kec. Batipuh', 'Putri', 'TT.323', 4, 17, 94.25, 'Rina Hastati, S.Sos', '2022-06-22 23:39:21', '2022-06-22 23:39:21'),
-(1641, 'Ikhwanul Ibnu Zaqi', 'Kec. Sungayang', 'Putra', 'TT.324', 4, 17, 91, 'Rina Hastati, S.Sos', '2022-06-22 23:41:21', '2022-06-22 23:41:21'),
-(1642, 'Arif Rahman Hakim', 'Kec. X Koto', 'Putra', 'TT.326', 4, 17, 85.5, 'Rina Hastati, S.Sos', '2022-06-22 23:43:09', '2022-06-22 23:43:09'),
-(1643, 'Aulia Ayu Cintami', 'Kec. Padang Ganting', 'Putri', 'TT.327', 4, 17, 89, 'Rina Hastati, S.Sos', '2022-06-22 23:44:31', '2022-06-22 23:44:31'),
-(1644, 'Deri Rahman', 'Kec. Lintau Buo', 'Putra', 'TT.328', 4, 17, 91.75, 'Rina Hastati, S.Sos', '2022-06-22 23:46:33', '2022-06-22 23:47:12'),
-(21303, 'Fithri Mardiyyah', 'Lintau Buo Utara', 'Putri', 'TF. 101', 19, 18, 182, 'Drs. Arius', '2022-06-23 15:26:23', '2022-06-23 15:36:59'),
-(21304, 'Asidqi Hasan Arofiqi', 'Rambatan', 'Putra', 'TF. 102', 19, 18, 127, 'Drs. Arius', '2022-06-23 15:35:09', '2022-06-23 15:35:09'),
-(21305, 'Dinda Alifia Salsabil', 'Lima Kaum', 'Putri', 'TF. 103', 19, 18, 118, 'Drs. Arius', '2022-06-23 15:39:59', '2022-06-23 15:39:59'),
-(21306, 'Ahmad Omar Fayyad', 'Lima Kaum', 'Putra', 'TF. 104', 19, 18, 167, 'Drs. Arius', '2022-06-23 15:41:35', '2022-06-23 15:41:35'),
-(21307, 'Ihwatul Akhiri', 'Tanjung Emas', 'Putra', 'TF. 108', 19, 18, 137, 'Drs. Arius', '2022-06-23 15:43:22', '2022-06-23 15:43:22'),
-(21308, 'Qadri Arrahman', 'X Koto', 'Putra', 'TF. 110', 19, 18, 108, 'Drs. Arius', '2022-06-23 15:48:44', '2022-06-23 15:48:44'),
-(21309, 'Azzuhdil Faruqi Muhammad', 'Sungai Tarab', 'Putra', 'TF. 112', 19, 18, 125, 'Drs. Arius', '2022-06-23 15:51:16', '2022-06-23 15:51:16'),
-(21310, 'Radhitia Shidqi', 'Rambatan', 'Putra', 'HQ. 2 20', 17, 10, 80.915, 'Joni Roza, S.Ag', '2022-06-23 15:58:36', '2022-06-23 15:58:36'),
-(21311, 'Salwa Huseini', 'Tanjung Emas', 'Putri', 'HQ. 2 21', 17, 10, 74.75, 'Joni Roza, S.Ag', '2022-06-23 16:01:57', '2022-06-23 16:01:57'),
-(21312, 'Habibullah', 'Sungai Tarab', 'Putra', 'HQ. 2 26', 17, 10, 75.915, 'Joni Roza, S.Ag', '2022-06-23 16:04:03', '2022-06-23 16:04:03'),
-(21313, 'Qatrunnada Rafifa', 'X Koto', 'Putri', 'HQ. 1 21', 16, 9, 92.08, 'Joni Roza, S.Ag', '2022-06-23 16:13:37', '2022-06-23 16:13:37'),
-(21314, 'Rifki Al Razzak', 'Batipuh', 'Putra', 'HQ. 1 14', 16, 9, 93.3, 'Joni Roza, S.Ag', '2022-06-23 16:15:05', '2022-06-23 16:15:05'),
-(21315, 'Kuntum Khaira Ummah', 'Batipuh', 'Putri', 'HQ. 1 01', 16, 9, 95.5, 'Joni Roza, S.Ag', '2022-06-23 16:16:25', '2022-06-23 16:16:25'),
-(21316, 'Hakkul Hakki Fadlan', 'Pariangan', 'Putra', 'HQ. 1 04', 16, 9, 90, 'Joni Roza, S.Ag', '2022-06-23 16:17:41', '2022-06-23 16:17:41'),
-(21317, 'Rachisa Hafizatoelhaq', 'Pariangan', 'Putri', 'HQ. 1 07', 16, 9, 90.09, 'Joni Roza, S.Ag', '2022-06-23 16:19:38', '2022-06-23 16:19:38'),
-(21318, 'Daffa Hadaya', 'Rambatan', 'Putra', 'HQ. 1 20', 16, 9, 95.08, 'Joni Roza, S.Ag', '2022-06-23 16:20:57', '2022-06-23 16:20:57'),
-(21319, 'Talitha Zhafiralice', 'Rambatan', 'Putri', 'HQ. 1 19', 16, 9, 89, 'Joni Roza, S.Ag', '2022-06-23 16:22:27', '2022-06-23 16:22:27'),
-(21320, 'Qalbi Salimun Najmi', 'Lima Kaum', 'Putra', 'HQ. 1 06', 16, 9, 95.75, 'Joni Roza, S.Ag', '2022-06-23 16:23:53', '2022-06-23 16:23:53'),
-(21321, 'Innayatul Muthmainnah', 'Lima Kaum', 'Putri', 'HQ. 1 15', 16, 9, 95.33, 'Joni Roza, S.Ag', '2022-06-23 16:25:37', '2022-06-23 16:25:37'),
-(21322, 'Muhammad Ikhsan Ar Rasyid', 'Tanjung Emas', 'Putra', 'HQ. 1 26', 16, 9, 91.33, 'Joni Roza, S.Ag', '2022-06-23 16:27:21', '2022-06-23 16:27:21'),
-(21323, 'Annisa Gefari Ramadhani', 'Tanjung Emas', 'Putri', 'HQ. 1 23', 16, 9, 94, 'Joni Roza, S.Ag', '2022-06-23 16:29:19', '2022-06-23 16:29:19'),
-(21324, 'Muhammad Azzam Al Hanif', 'Lintau Buo', 'Putra', 'HQ. 1 24', 16, 9, 94.33, 'Joni Roza, S.Ag', '2022-06-23 16:31:07', '2022-06-23 16:31:07'),
-(21325, 'Zahwa Nadi Fitri', 'Lintau Buo', 'Putri', 'HQ. 1 27', 16, 9, 95.08, 'Joni Roza, S.Ag', '2022-06-23 16:32:19', '2022-06-23 16:32:19'),
-(21326, 'Ilham Ramadhan', 'Sungayang', 'Putra', 'HQ. 1 10', 16, 9, 88.34, 'Joni Roza, S.Ag', '2022-06-23 16:33:46', '2022-06-23 16:33:46'),
-(21327, 'Faizah Hanifah Arez', 'Sungayang', 'Putri', 'HQ. 1 25', 16, 9, 90.75, 'Joni Roza, S.Ag', '2022-06-23 16:35:33', '2022-06-23 16:35:33'),
-(21328, 'Hafiz Fiat', 'Sungai Tarab', 'Putra', 'HQ. 1 18', 16, 9, 82.2, 'Joni Roza, S.Ag', '2022-06-23 16:36:51', '2022-06-23 16:36:51'),
-(21329, 'Siroja Wahhaja', 'Sungai Tarab', 'Putri', 'HQ. 1 11', 16, 9, 82.9, 'Joni Roza, S.Ag', '2022-06-23 16:38:23', '2022-06-23 16:38:23'),
-(21330, 'Ardian Ramadhan', 'Salimpaung', 'Putra', 'HQ. 1 22', 16, 9, 91.75, 'Joni Roza, S.Ag', '2022-06-23 16:39:38', '2022-06-23 16:39:38'),
-(21331, 'Ghaisani Nazira Onsi', 'Salimpaung', 'Putri', 'HQ. 1 03', 16, 9, 88, 'Joni Roza, S.Ag', '2022-06-23 16:41:22', '2022-06-23 16:41:22'),
-(21332, 'Gevan Putra', 'Padang Ganting', 'Putra', 'HQ. 1 12', 16, 9, 83.1, 'Joni Roza, S.Ag', '2022-06-23 16:43:20', '2022-06-23 16:43:20'),
-(21333, 'Khalisa Aqila', 'Padang Ganting', 'Putri', 'HQ. 1 17', 16, 9, 85.75, 'Joni Roza, S.Ag', '2022-06-23 16:44:50', '2022-06-23 16:44:50'),
-(21334, 'Muhammad Iqbal', 'Batipuh Selatan', 'Putra', 'HQ. 1 08', 16, 9, 78.5, 'Joni Roza, S.Ag', '2022-06-23 16:45:59', '2022-06-23 16:45:59'),
-(21335, 'Naira Faiza Zihni', 'Batipuh Selatan', 'Putri', 'HQ. 1 05', 16, 9, 90.84, 'Joni Roza, S.Ag', '2022-06-23 16:47:25', '2022-06-23 16:47:25'),
-(21336, 'Aghazio Devantos', 'Tanjung Baru', 'Putra', 'HQ. 1 02', 16, 9, 90.59, 'Joni Roza, S.Ag', '2022-06-23 16:48:40', '2022-06-23 16:48:40'),
-(21337, 'Khairunnisa Naylatul Aziz', 'Tanjung Baru', 'Putri', 'HQ. 1 13', 16, 9, 92, 'Joni Roza, S.Ag', '2022-06-23 16:50:01', '2022-06-23 16:50:01'),
-(21338, 'Muhammad Rifat Mafaza', 'Lintau Buo Utara', 'Putra', 'HQ. 1 16', 16, 9, 95.25, 'Joni Roza, S.Ag', '2022-06-23 16:51:17', '2022-06-23 16:51:17'),
-(21339, 'Riri Safitri', 'Lintau Buo Utara', 'Putri', 'HQ. 1 09', 16, 9, 90.09, 'Joni Roza, S.Ag', '2022-06-23 16:52:19', '2022-06-23 16:52:19');
+INSERT INTO `mtq_peserta` (`id`, `user_id`, `jk`, `team`, `nomor`, `kategori_id`, `golongan_id`, `total`, `promotor`, `verifikator`, `operator`, `status`, `keterangan`, `created_at`, `updated_at`) VALUES
+(11, 33, 'Putra', 1, '', 1, 1, 0, 2, '2', '', 2, 'salah upload file', '2024-04-21 12:20:24', '2024-04-21 12:56:01'),
+(12, 34, 'Putri', 1, '', 1, 1, 0, 2, NULL, '', 2, NULL, '2024-04-21 12:21:18', '2024-04-21 12:21:18');
 
 -- --------------------------------------------------------
 
@@ -7034,7 +6384,63 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (21, 'App\\Models\\User', 2, 'auth_token', 'efb304a1b377c13dd3febca67608a9c54711b8a12080d5b71a7afca4f1bca5ca', '[\"*\"]', NULL, '2024-04-19 03:12:43', '2024-04-19 03:12:43'),
 (22, 'App\\Models\\User', 2, 'auth_token', '48a3afb35b9ee3353d95f4018d48fa8b40ffa8119ee16e5c5ea38c6596c53802', '[\"*\"]', NULL, '2024-04-19 07:00:34', '2024-04-19 07:00:34'),
 (23, 'App\\Models\\User', 2, 'auth_token', 'bbd83bb18fbc300616c2a53581ce1fd6c68e7355ccc1714898c1e8aeb40fd3f6', '[\"*\"]', '2024-04-19 09:49:43', '2024-04-19 07:16:15', '2024-04-19 09:49:43'),
-(24, 'App\\Models\\User', 2, 'auth_token', '49c7f9ffde0af782cae45f4532d2608c36a0619c4e88ae63dea18602fb875bd6', '[\"*\"]', '2024-04-19 09:35:07', '2024-04-19 09:17:56', '2024-04-19 09:35:07');
+(24, 'App\\Models\\User', 2, 'auth_token', '49c7f9ffde0af782cae45f4532d2608c36a0619c4e88ae63dea18602fb875bd6', '[\"*\"]', '2024-04-19 09:35:07', '2024-04-19 09:17:56', '2024-04-19 09:35:07'),
+(25, 'App\\Models\\User', 2, 'auth_token', '972249bd351f053d7a7b585c9b9ac4534fae27ab0b4c86b73f44915c1b05d0dd', '[\"*\"]', '2024-04-20 13:26:40', '2024-04-19 22:49:15', '2024-04-20 13:26:40'),
+(26, 'App\\Models\\User', 2, 'auth_token', 'db59b9dda937b5a32ab588741f503a219a997d8cf5940ee8852d3030de1c0974', '[\"*\"]', '2024-04-21 05:52:21', '2024-04-20 03:34:05', '2024-04-21 05:52:21'),
+(27, 'App\\Models\\User', 2, 'auth_token', '9df009475482bdc0dffb36c78703de8ed5ded2d3f9588310c8861f4b8816ab40', '[\"*\"]', '2024-04-21 04:59:15', '2024-04-20 13:19:05', '2024-04-21 04:59:15'),
+(28, 'App\\Models\\User', 2, 'auth_token', '0f8f3d12f808f085b33d2d8ed5472c33b094e39b92d1aeee8f3e8d6762aeeae1', '[\"*\"]', '2024-04-21 04:50:40', '2024-04-20 13:34:46', '2024-04-21 04:50:40'),
+(29, 'App\\Models\\User', 2, 'auth_token', '94d7a734b69a0dd5afdf56f78249c046297815b858ca3317ec0cb7b25caf6650', '[\"*\"]', '2024-04-21 05:56:29', '2024-04-21 04:51:03', '2024-04-21 05:56:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `peserta_files`
+--
+
+CREATE TABLE `peserta_files` (
+  `id` int(255) NOT NULL,
+  `user_id` bigint(255) NOT NULL,
+  `files_id` int(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `peserta_files`
+--
+
+INSERT INTO `peserta_files` (`id`, `user_id`, `files_id`, `filename`, `created_at`, `updated_at`) VALUES
+(35, 33, 1, '33.Foto.jpeg', '2024-04-21 12:02:12', '2024-04-21 12:16:50'),
+(36, 33, 2, '33.KTP.pdf', '2024-04-21 12:02:12', '2024-04-21 12:17:02'),
+(37, 33, 3, '33.KartuKeluargaKK.pdf', '2024-04-21 12:02:12', '2024-04-21 12:17:06'),
+(38, 34, 1, '34.Foto.jpeg', '2024-04-21 12:03:55', '2024-04-21 12:17:35'),
+(39, 34, 2, '34.KTP.pdf', '2024-04-21 12:03:55', '2024-04-21 12:17:41'),
+(40, 34, 3, '34.KartuKeluargaKK.pdf', '2024-04-21 12:03:55', '2024-04-21 12:17:45'),
+(41, 35, 1, 'NONE', '2024-04-21 12:06:41', '2024-04-21 12:06:41'),
+(42, 35, 2, 'NONE', '2024-04-21 12:06:41', '2024-04-21 12:06:41'),
+(43, 35, 3, 'NONE', '2024-04-21 12:06:41', '2024-04-21 12:06:41'),
+(44, 36, 1, 'NONE', '2024-04-21 12:07:58', '2024-04-21 12:07:58'),
+(45, 36, 2, 'NONE', '2024-04-21 12:07:58', '2024-04-21 12:07:58'),
+(46, 36, 3, 'NONE', '2024-04-21 12:07:58', '2024-04-21 12:07:58'),
+(47, 37, 1, 'NONE', '2024-04-21 12:09:00', '2024-04-21 12:09:00'),
+(48, 37, 2, 'NONE', '2024-04-21 12:09:00', '2024-04-21 12:09:00'),
+(49, 37, 3, 'NONE', '2024-04-21 12:09:00', '2024-04-21 12:09:00'),
+(50, 38, 1, 'NONE', '2024-04-21 12:09:50', '2024-04-21 12:09:50'),
+(51, 38, 2, 'NONE', '2024-04-21 12:09:50', '2024-04-21 12:09:50'),
+(52, 38, 3, 'NONE', '2024-04-21 12:09:50', '2024-04-21 12:09:50'),
+(53, 39, 1, 'NONE', '2024-04-21 12:10:52', '2024-04-21 12:10:52'),
+(54, 39, 2, 'NONE', '2024-04-21 12:10:52', '2024-04-21 12:10:52'),
+(55, 39, 3, 'NONE', '2024-04-21 12:10:52', '2024-04-21 12:10:52'),
+(56, 40, 1, 'NONE', '2024-04-21 12:12:08', '2024-04-21 12:12:08'),
+(57, 40, 2, 'NONE', '2024-04-21 12:12:08', '2024-04-21 12:12:08'),
+(58, 40, 3, 'NONE', '2024-04-21 12:12:08', '2024-04-21 12:12:08'),
+(59, 41, 1, 'NONE', '2024-04-21 12:14:15', '2024-04-21 12:14:15'),
+(60, 41, 2, 'NONE', '2024-04-21 12:14:15', '2024-04-21 12:14:15'),
+(61, 41, 3, 'NONE', '2024-04-21 12:14:15', '2024-04-21 12:14:15'),
+(62, 42, 1, 'NONE', '2024-04-21 12:15:00', '2024-04-21 12:15:00'),
+(63, 42, 2, 'NONE', '2024-04-21 12:15:00', '2024-04-21 12:15:00'),
+(64, 42, 3, 'NONE', '2024-04-21 12:15:00', '2024-04-21 12:15:00');
 
 -- --------------------------------------------------------
 
@@ -7052,7 +6458,7 @@ CREATE TABLE `users` (
   `tempat_lahir` varchar(255) NOT NULL,
   `tanggal_lahir` date DEFAULT '1971-01-01',
   `jk` varchar(255) NOT NULL,
-  `telp` int(255) NOT NULL,
+  `telp` bigint(255) NOT NULL,
   `pekerjaan` varchar(255) DEFAULT NULL,
   `satker` varchar(255) DEFAULT NULL,
   `alamat` text DEFAULT NULL,
@@ -7062,19 +6468,26 @@ CREATE TABLE `users` (
   `dept_id` int(25) NOT NULL,
   `kontingen_id` bigint(255) NOT NULL,
   `golongan_id` int(25) NOT NULL,
-  `kategori_id` int(25) NOT NULL
+  `kategori_id` int(25) NOT NULL,
+  `team` int(25) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `nomor_induk`, `kk`, `tempat_lahir`, `tanggal_lahir`, `jk`, `telp`, `pekerjaan`, `satker`, `alamat`, `created_at`, `updated_at`, `role`, `dept_id`, `kontingen_id`, `golongan_id`, `kategori_id`) VALUES
-(2, 'RIDHO SAPUTRA S.Kom', 'gekikara01@gmail.com', '$2y$10$L2ogNwQnpR7rfmwULgG08Of0QD4zJPBt85bWebQEtXJgt0nSW3am2', 199201152022031001, 0, '', NULL, '', 0, NULL, NULL, NULL, '2024-04-17 09:30:21', '2024-04-17 09:30:21', 'Official', 4, 20220927105, 9999, 9999),
-(4, 'Ridho Saputra', 'ridho.saputra@student.upi.edu', '$2y$10$9HaFLoZx9ypCQ/3iSpfTEe1Tqhx22irtRH7CGi2kqvnuqdjwofp5K', 1304041501920001, 0, 'Tanah Datar', '2024-04-12', '', 2147483647, 'Asisten Ahli', NULL, NULL, '2024-04-19 09:19:55', '2024-04-19 09:19:55', 'Peserta', 0, 20220927105, 99, 99),
-(7, 'Ridho dasdad', '111@gmail.com', '$2y$10$oebK9BRQdfA4VLJoDXi0NO/9/ya8Y2tkjtwqQ5lr9CXxL5ElCVZEW', 112344, 123123, 'padang', '2021-01-01', '', 2147483647, 'asisten', 'man 4', 'asdasdadad', '2024-04-19 09:23:05', '2024-04-19 09:23:05', 'Peserta', 0, 20220927105, 99, 99),
-(18, 'Ridho Saputracc', 'ridho.saputra22@student.upi.edu', '$2y$10$VEMfgBsZhP8WsDfykAdULOZ50jVGxgYeXc9nB1cmiSNQUV0LOzE.y', 13040415019200013, 13040401020300232, 'Solok', '2024-04-03', '', 2147483647, 'Staff Pranata Komputer', 'MAN 1 Tanah Datar', 'Jl. Parak Anau Raya II No.12\nKel, Parupuk Tabing, Kec. Koto Tangah, Kota Padang', '2024-04-19 09:46:29', '2024-04-19 09:46:29', 'Peserta', 0, 20220927105, 99, 99),
-(19, 'Ridho Saputraxxx', 'gekikara031@gmail.com', '$2y$10$Ty3ocXhHCf1VA9uB0F9qNORzeRndUUBhwEmhy8/qErslXzg64PpN.', 1304041501920000332, 1304120309070184, 'Padang', '2024-04-23', '', 2147483647, 'Universitas Pendidikan Indonesia', 'MAN 4 Tanah Datar', 'Jl. Parak Anau Raya II No.12\nKel, Parupuk Tabing, Kec. Koto Tangah, Kota Padang', '2024-04-19 09:49:43', '2024-04-19 09:49:43', 'Peserta', 0, 20220927105, 99, 99);
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `nomor_induk`, `kk`, `tempat_lahir`, `tanggal_lahir`, `jk`, `telp`, `pekerjaan`, `satker`, `alamat`, `created_at`, `updated_at`, `role`, `dept_id`, `kontingen_id`, `golongan_id`, `kategori_id`, `team`) VALUES
+(2, 'RIDHO SAPUTRA S.Kom', 'gekikara01@gmail.com', '$2y$10$L2ogNwQnpR7rfmwULgG08Of0QD4zJPBt85bWebQEtXJgt0nSW3am2', 199201152022031001, 0, '', NULL, 'Putra', 0, 'Admin', NULL, NULL, '2024-04-17 09:30:21', '2024-04-17 09:30:21', 'Official', 4, 20220927105, 9999, 9999, 1),
+(33, 'User01', 'user01@gmail.com', '$2y$10$O9GVIkDEbDmIJTOkaOs0xudgDssXU.DB2bIRInXt1ZffdTa4YRkVS', 1, 2, 'Tanah Datar', '1997-04-12', 'Putra', 89290902244, 'Asisten Ahli', 'KUA Lima Kaum', 'ababaddd', '2024-04-21 05:02:12', '2024-04-21 05:51:21', 'Peserta', 0, 20220927105, 1, 1, 1),
+(34, 'User02', 'user02@gmail.com', '$2y$10$8f87iH0sXgqJuM/NO99.hu6g2iT0kQyVcyKq4.mPLshmqvQ45HN2O', 2, 2, 'Agam', '2024-03-09', 'Putri', 89290902222, 'Asisten Ahli', 'SDN 41 Aur Barulak', 'jln indomo, lima kaum, 27217', '2024-04-21 05:03:55', '2024-04-21 05:03:55', 'Peserta', 0, 20220927105, 1, 1, 1),
+(35, 'TeamP01', 'TeamP01@gmail.com', '$2y$10$7HeIYb9J7K80HlEH.PaGLumv8WXBxa/ddknFDqPrAlTGdux8lDkX.', 3, 1, 'Agam', '2006-01-06', 'Putra', 89623965916, 'Staff Pranata Komputer', 'KUA Lima Kaum', 'dasdsadad', '2024-04-21 05:06:41', '2024-04-21 05:07:10', 'Peserta', 0, 20220927105, 1, 2, 1),
+(36, 'TeamP02', 'TeamP02@gmail.com', '$2y$10$zMlJSJgSCTPoXZWiDYydNOKFMOPkdk4MgOyjb.kU9Gk3l7ZB.0eyy', 4, 1, 'Padang', '2024-03-08', 'Putra', 89623965916, 'Pegawai Bank', 'MTsN 11 Tanah Datar', 'asdadsad', '2024-04-21 05:07:58', '2024-04-21 05:07:58', 'Peserta', 0, 20220927105, 1, 2, 1),
+(37, 'TeamP03', 'TeamP03@gmail.com', '$2y$10$SKsM/P0G12nFPPs0hdMOSu94dh0VQOx8kjU2y207lLOTOrSa15zyu', 5, 1, 'Agam', '2009-04-01', 'Putra', 6289623965916, 'Staff Pranata Komputer', 'SDN 41 Aur Barulak', 'sadadsad', '2024-04-21 05:09:00', '2024-04-21 05:09:00', 'Peserta', 0, 20220927105, 1, 2, 2),
+(38, 'TeamP04', 'TeamP04@gmail.com', '$2y$10$KOn6ATuXeG/lmYv2MvOx2ebAcZ4AapQ2xn2twtPxuHocP0OSnXHxO', 6, 1, 'Padang', '1997-01-16', 'Putra', 89623965916, 'Asisten Ahli', 'SDN 41 Aur Barulak', 'adsadadad', '2024-04-21 05:09:50', '2024-04-21 05:09:50', 'Peserta', 0, 20220927105, 1, 2, 2),
+(39, 'TeamW01', 'TeamP05@gmail.com', '$2y$10$MGwvJcY0aa2il4m1oOdRDO/Aww9dNwUmlRW46klfd4mqHiL8dxqDG', 7, 1, 'Tanah Datar', '1997-04-10', 'Putri', 89290902222, 'Asisten Ahli', 'SDN 41 Aur Barulak', 'asdsadad', '2024-04-21 05:10:52', '2024-04-21 05:11:03', 'Peserta', 0, 20220927105, 1, 2, 1),
+(40, 'TeamW02', 'TeamW02@gmail.com', '$2y$10$CNMDH1bgwkuKVegS7O.tM.9SnY5dMTgzXiwf5DZ1TYTBhcWLXh2Zu', 10, 1, 'Paddaang', '1994-04-22', 'Putri', 6289623965916, 'Asisten Ahli', 'KUA Kec. Salimpaung', 'asdsadsad', '2024-04-21 05:12:08', '2024-04-21 05:12:08', 'Peserta', 0, 20220927105, 1, 2, 1),
+(41, 'TeamW03', 'TeamW03@gmail.com', '$2y$10$ErBpOZqG2JUyYvP79hafxu/SOFtZCaST2qFWRl87YGqdBo24B/xMO', 12, 1, 'Tanah Datar', '2024-04-18', 'Putri', 6289623976864, 'Asisten Ahli', 'KUA Kec. Sungayang', 'asdadsad', '2024-04-21 05:14:15', '2024-04-21 05:14:15', 'Peserta', 0, 20220927105, 1, 2, 2),
+(42, 'TeamW04', 'TeamW04@gmail.com', '$2y$10$AyXEvzIsznTQyouajangoebMy7P4WtQOfRKMo3NcvDjO0CT/pqoHK', 13, 1, 'Tanah Datar', '1955-04-14', 'Putri', 8962396591611, 'Staff Pranata Komputer', 'KUA Kec. Salimpaung', 'asdsadsadad', '2024-04-21 05:15:00', '2024-04-21 05:15:00', 'Peserta', 0, 20220927105, 1, 2, 2);
 
 --
 -- Indexes for dumped tables
@@ -7100,6 +6513,12 @@ ALTER TABLE `failed_jobs`
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
+-- Indexes for table `komentar`
+--
+ALTER TABLE `komentar`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -7109,6 +6528,12 @@ ALTER TABLE `migrations`
 -- Indexes for table `mtq_category`
 --
 ALTER TABLE `mtq_category`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mtq_files`
+--
+ALTER TABLE `mtq_files`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -7133,7 +6558,8 @@ ALTER TABLE `mtq_nilai`
 -- Indexes for table `mtq_peserta`
 --
 ALTER TABLE `mtq_peserta`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `mtq_peserta_final`
@@ -7168,6 +6594,12 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `peserta_files`
+--
+ALTER TABLE `peserta_files`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -7198,6 +6630,12 @@ ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `komentar`
+--
+ALTER TABLE `komentar`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -7208,6 +6646,12 @@ ALTER TABLE `migrations`
 --
 ALTER TABLE `mtq_category`
   MODIFY `id` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `mtq_files`
+--
+ALTER TABLE `mtq_files`
+  MODIFY `id` int(25) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `mtq_golongan`
@@ -7231,7 +6675,7 @@ ALTER TABLE `mtq_nilai`
 -- AUTO_INCREMENT for table `mtq_peserta`
 --
 ALTER TABLE `mtq_peserta`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21340;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `mtq_peserta_final`
@@ -7255,13 +6699,19 @@ ALTER TABLE `no_peserta`
 -- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `peserta_files`
+--
+ALTER TABLE `peserta_files`
+  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
