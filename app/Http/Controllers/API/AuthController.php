@@ -151,7 +151,7 @@ class AuthController extends Controller
 	}
 	
 	public function reqPeserta(Request $req){
-		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => $req->id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
+		$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => Auth::user()->kontingen_id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
 		
 		$peserta = $peserta->map(function($f){
 			$random = Str::random(20);
@@ -177,6 +177,8 @@ class AuthController extends Controller
 				'jk' => $f->jk,
 				'teamstatus' => $f->gmtq->team,
 				'team' => $f->team,
+				'verifikator' => User::where('id',$f->peserta->verifikator ?? 0)->pluck('name')->first() ?? '-',
+				'keterangan' => $f->peserta->keterangan ?? '-',
 				'status' => $f->peserta->status ?? 1,
 				'update' => Carbon::parse($update)->translatedFormat('d F Y H:i'),
 			];
@@ -190,24 +192,36 @@ class AuthController extends Controller
 	}
 	
 	public function savePeserta(Request $request){
-		$user = User::where('nomor_induk',$request->nik)->first();
 		
 		$messages = [
 		  'required'  => '":attribute" Harus Diisi!!',
 		  'unique'    => '":attribute" Sudah Pernah Disimpan/Terdaftar/Ada di Database'
 		];
 		
-		$validator = \Validator::make($request->all(), [
-			'nama' => 'required',
-			'nik' => 'required|unique:users,nomor_induk',
-			'kk' => 'required',
-			'tempat_lahir' => 'required',
-			'tanggal_lahir' => 'required',
-			'telp' => 'required',
-			'jk' => 'required',
-			'email' => 'required',
-			'password' => 'required',
-		],$messages);
+		if($request->statusx == 'reg'){
+			$validator = \Validator::make($request->all(), [
+				'nama' => 'required',
+				'nik' => 'required',
+				'kk' => 'required',
+				'tempat_lahir' => 'required',
+				'tanggal_lahir' => 'required',
+				'telp' => 'required',
+				'jk' => 'required',
+				'email' => 'required',
+				'password' => 'required',
+			],$messages);
+		}else{
+			$validator = \Validator::make($request->all(), [
+				'nama' => 'required',
+				'nik' => 'required',
+				'kk' => 'required',
+				'tempat_lahir' => 'required',
+				'tanggal_lahir' => 'required',
+				'telp' => 'required',
+				'jk' => 'required',
+				'email' => 'required',
+			],$messages);
+		}
 		
 		if ($validator->fails()) {
 			return response()->json([
@@ -228,79 +242,125 @@ class AuthController extends Controller
 			$number = $request->telp;
 		}
 		
+		if($request->statusx == 'reg'){
+			$user = User::where('nomor_induk',$request->nik)->first();
+		}else if($request->statusx == 'edit'){
+			$user = User::where('id','!=',$request->gid)->where('nomor_induk',$request->nik)->first();
+		}
+		
 		if(!$user){
-			$cekemail = User::where('email',$request->email)->first();
-			$berkas = MTQFiles::all();
+			if($request->statusx == 'reg'){
+				$cekemail = User::where('email',$request->email)->first();
+				$berkas = MTQFiles::all();
+			}else if($request->statusx == 'edit'){
+				$cekemail = User::where('id','!=',$request->gid)->where('email',$request->email)->first();
+			}
 			
 			if(!$cekemail){
-				$kuota = GMTQ::findOrfail($request->gid);
-				
-				if($request->jk == 'Putra'){
-					$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putra'])->count();
-					if($kuota->team == 0){
-						if($utusan >= $kuota->max_p){
-							return response()->json([
-								'success' => false,
-								'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
-							]);
+				if($request->statusx == 'reg'){
+					$kuota = GMTQ::findOrfail($request->gid);
+					
+					if($request->jk == 'Putra'){
+						$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putra'])->count();
+						if($kuota->team == 0){
+							if($utusan >= $kuota->max_p){
+								return response()->json([
+									'success' => false,
+									'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+								]);
+							}
+						}else{
+							if($utusan >= $request->team*($kuota->max_p / $kuota->team)){
+								return response()->json([
+									'success' => false,
+									'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+								]);
+							}
 						}
 					}else{
-						if($utusan >= $request->team*($kuota->max_p / $kuota->team)){
-							return response()->json([
-								'success' => false,
-								'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putra sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
-							]);
+						$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putri'])->count();
+						if($kuota->team == 0){
+							if($utusan >= $kuota->max_w){
+								return response()->json([
+									'success' => false,
+									'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+								]);
+							}
+						}else{
+							if($utusan >= $request->team*($kuota->max_w / $kuota->team)){
+								return response()->json([
+									'success' => false,
+									'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
+								]);
+							}
 						}
 					}
-				}else{
-					$utusan = User::where(['role' => 'Peserta', 'kategori_id' => $request->gid, 'kontingen_id' => Auth::user()->kontingen_id, 'jk' => 'Putri'])->count();
-					if($kuota->team == 0){
-						if($utusan >= $kuota->max_w){
-							return response()->json([
-								'success' => false,
-								'message' => '<b style="font-size: 16px">Kuota untuk Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
-							]);
-						}
+					$save = User::create([
+						'name' => $request->nama,
+						'email' => $request->email,
+						'password' => bcrypt($request->password),
+						'nomor_induk' => $request->nik,
+						'kk' => $request->kk,
+						'tempat_lahir' => $request->tempat_lahir,
+						'tanggal_lahir' => Carbon::parse($request->tanggal_lahir),
+						'jk' => $request->jk,
+						'telp' => $request->telp,
+						'pekerjaan' => $request->pekerjaan,
+						'satker' => $request->satker,
+						'alamat' => $request->alamat,
+						'role' => 'Peserta',
+						'kontingen_id' => Auth::user()->kontingen_id,
+						'golongan_id' => $request->cid,
+						'kategori_id' => $request->gid,
+						'team' => $request->team,
+					]);
+				}else if($request->statusx == 'edit'){
+					if(empty($request->password) || $request->password == NULL || $request->password == ''){
+						$save = User::where('id',$request->gid)->update([
+							'name' => $request->nama,
+							'email' => $request->email,
+							'nomor_induk' => $request->nik,
+							'kk' => $request->kk,
+							'tempat_lahir' => $request->tempat_lahir,
+							'tanggal_lahir' => Carbon::parse($request->tanggal_lahir),
+							'jk' => $request->jk,
+							'telp' => $request->telp,
+							'pekerjaan' => $request->pekerjaan,
+							'satker' => $request->satker,
+							'alamat' => $request->alamat,
+							'team' => $request->team,
+						]);
 					}else{
-						if($utusan >= $request->team*($kuota->max_w / $kuota->team)){
-							return response()->json([
-								'success' => false,
-								'message' => '<b style="font-size: 16px">Kuota untuk •Team '.$request->team.'• Peserta Putri sudah Terpenuhi/Didaftarkan!</b><hr/><i style="font-size: 15px">Silahkan <b>Pilih Team lain</b> atau <b>Hapus yang terdaftar sebelumnya</b> terlebih dahulu jika ingin Mengubah Peserta</i>',
-							]);
-						}
+						$save = User::where('id',$request->gid)->update([
+							'name' => $request->nama,
+							'email' => $request->email,
+							'password' => bcrypt($request->password),
+							'nomor_induk' => $request->nik,
+							'kk' => $request->kk,
+							'tempat_lahir' => $request->tempat_lahir,
+							'tanggal_lahir' => Carbon::parse($request->tanggal_lahir),
+							'jk' => $request->jk,
+							'telp' => $request->telp,
+							'pekerjaan' => $request->pekerjaan,
+							'satker' => $request->satker,
+							'alamat' => $request->alamat,
+							'team' => $request->team,
+						]);
 					}
 				}
 				
-				$save = User::create([
-					'name' => $request->nama,
-					'email' => $request->email,
-					'password' => bcrypt($request->password),
-					'nomor_induk' => $request->nik,
-					'kk' => $request->kk,
-					'tempat_lahir' => $request->tempat_lahir,
-					'tanggal_lahir' => Carbon::parse($request->tanggal_lahir),
-					'jk' => $request->jk,
-					'telp' => $request->telp,
-					'pekerjaan' => $request->pekerjaan,
-					'satker' => $request->satker,
-					'alamat' => $request->alamat,
-					'role' => 'Peserta',
-					'kontingen_id' => Auth::user()->kontingen_id,
-					'golongan_id' => $request->cid,
-					'kategori_id' => $request->gid,
-					'team' => $request->team,
-				]);
-				
-				$cekuser = User::where('nomor_induk',$request->nik)->first();
-				
-				foreach($berkas as $berkas){
-					PesertaFiles::create([
-						'user_id' => $cekuser->id,
-						'files_id' => $berkas->id,
-						'filename' => 'NONE',
-						'status' => 0,
-						'keterangan' => 'Silahkan Upload Disini',
-					]);
+				if($request->statusx == 'reg'){
+					$cekuser = User::where('nomor_induk',$request->nik)->first();
+					
+					foreach($berkas as $berkas){
+						PesertaFiles::create([
+							'user_id' => $cekuser->id,
+							'files_id' => $berkas->id,
+							'filename' => 'NONE',
+							'status' => 0,
+							'keterangan' => 'Silahkan Upload Disini',
+						]);
+					}
 				}
 				
 				return response()->json([

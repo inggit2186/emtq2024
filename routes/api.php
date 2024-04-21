@@ -37,6 +37,8 @@ Route::group(['prefix' => '/v1'], function () {
 	Route::get('/pesertaMTQ/{id}', [PesertaController::class, 'pesertaMTQ']);
 
     Route::group(['middleware' => ['auth:sanctum']], function () {
+		Route::get('/getpeserta/{id}', [PesertaController::class, 'getPeserta']);
+		Route::post('/deletepeserta', [PesertaController::class, 'deletePeserta']);
 		Route::get('/cabangMTQ/reg/{id}', [PesertaController::class, 'cabangMTQ']);
 		Route::post('/regpeserta', [AuthController::class, 'reqPeserta']);
 		Route::post('/savePeserta', [AuthController::class, 'savePeserta']);

@@ -17,6 +17,7 @@ class Peserta extends Model
         'kategori_id',
         'golongan_id',
         'total',
+        'promotor',
         'verifikator',
         'operator',
         'status',
@@ -26,6 +27,15 @@ class Peserta extends Model
     ];
 	
 	public function user(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+	public function promotor(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+	public function verifikator(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+	public function operator(){
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 	public function cmtq(){

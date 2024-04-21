@@ -64,10 +64,10 @@ class PesertaController extends Controller
 				$jmlp = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'kontingen_id' => $kontingen, 'jk' => 'Putra'])->count();
 				$jmlw = User::where(['role' => 'Peserta', 'kategori_id' => $f->id, 'kontingen_id' => $kontingen, 'jk' => 'Putri'])->count();
 			}else{
-				$jmlp = Peserta::where(['kategori_id' => $id,'jk' => 'Putra'])->where(function ($query){
+				$jmlp = Peserta::where(['kategori_id' => $f->id,'jk' => 'Putra'])->where(function ($query){
 						$query->where('status',3)->orWhere('status',5);
 					})->count();
-				$jmlw = Peserta::where(['kategori_id' => $id,'jk' => 'Putri'])->where(function ($query){
+				$jmlw = Peserta::where(['kategori_id' => $f->id,'jk' => 'Putri'])->where(function ($query){
 						$query->where('status',3)->orWhere('status',5);
 					})->count();
 			}
@@ -162,6 +162,12 @@ class PesertaController extends Controller
 				$peserta->pp = asset('uploads/BerkasPeserta').'/'.$peserta->id.'/'.$peserta->pp().'?t='.$random;
 			}
 			
+			if($peserta->gmtq->team > 0){
+				$teamstatus = 'team';
+			}else{
+				$teamstatus = 'personal';
+			}
+				
 			$peserta->nik = "$peserta->nomor_induk";
 			$peserta->telp = preg_replace('/(?<=\d)(?=(\d{4})+$)/', ' ', $peserta->telp);
 			$peserta->umur = $peserta->umur();
@@ -170,6 +176,8 @@ class PesertaController extends Controller
 			$peserta->tanggallahir = Carbon::parse($peserta->tanggal_lahir)->translatedFormat('d F Y');
 			$peserta->cabang = $peserta->cmtq->kategori ?? '-';
 			$peserta->kategori = $peserta->gmtq->golongan ?? '-';
+			$peserta->teamstatus = $teamstatus ?? 'personal';
+			$peserta->maxteam = $peserta->gmtq->team ?? '0';
 			
 			$komen = Komentar::where(['to_user' => $id])->orderBy('created_at','ASC')->get();
 			$komen = $komen->map(function($f){
@@ -231,6 +239,17 @@ class PesertaController extends Controller
 		}
 	}
 	
+	public function getPeserta($id){
+		$peserta = User::where('id',$id)->first();
+		$peserta->nik = "$peserta->nomor_induk";
+		$peserta->teamstatus = $peserta->gmtq->team;
+		
+		return response()->json([
+				'success' => true,
+				'data' => $peserta,
+		   ]);
+	}
+	
 	public function uploadSyarat(Request $req){
 		$datareq = PesertaFiles::where(['user_id' => $req->userid, 'files_id' => $req->id])->first();
 		$sy = MTQFiles::findOrfail($req->id);
@@ -255,8 +274,6 @@ class PesertaController extends Controller
 		
 		$upload = PesertaFiles::where(['user_id' => $req->userid, 'files_id' => $req->id])->update([
 			'filename' => $flname,
-			'status' => 1,
-			'keterangan' => $sy->nama.' Sudah Diupload'
 		]);
 		
 		$syarat = PesertaFiles::where(['user_id' => $req->userid])->join('mtq_files', function($join)
@@ -277,9 +294,7 @@ class PesertaController extends Controller
 				$map = [
 					'id' => $f->files_id,
 					'nama' => $f->nama,
-					'status' => $f->status,
 					'wajib' => $f->wajib,
-					'keterangan' => $f->keterangan,
 					'fileUrl' => $path,
 					'filename' => $f->filename,
 				];
@@ -303,8 +318,6 @@ class PesertaController extends Controller
 		
 		$delete = PesertaFiles::where(['user_id' => $req->userid, 'files_id' => $req->id])->update([
 			'filename' => 'NONE',
-			'status' => 0,
-			'keterangan' => 'Silahkan Upload Disini',
 		]);
 		
 		$syarat = PesertaFiles::where(['user_id' => $req->userid])->join('mtq_files', function($join)
@@ -325,9 +338,7 @@ class PesertaController extends Controller
 				$map = [
 					'id' => $f->files_id,
 					'nama' => $f->nama,
-					'status' => $f->status,
 					'wajib' => $f->wajib,
-					'keterangan' => $f->keterangan,
 					'fileUrl' => $path,
 					'filename' => $f->filename,
 				];
@@ -353,6 +364,7 @@ class PesertaController extends Controller
 					'team' => $peserta->team,
 					'kategori_id' => $peserta->kategori_id,
 					'golongan_id' => $peserta->golongan_id,
+					'promotor' => Auth::user()->id,
 					'status' => 2
 				]);
 				return response()->json([
@@ -373,6 +385,65 @@ class PesertaController extends Controller
 					'message' => 'Anda Tidak Memiliki Hak Akses ke Bagian Ini',
 			   ]);
 		}
+	}
+	
+	public function deletePeserta(Request $req){
+		$peserta = User::where('id',$req->userid)->first();
+		
+		if($peserta->kontingen_id == Auth::user()->kontingen_id){
+			$datareq = PesertaFiles::where(['user_id' => $req->userid])->get();
+			
+			foreach($datareq as $datareq){
+				$file = public_path('uploads/BerkasPeserta/'.$datareq->user_id."/".$datareq->filename);
+				$result = File::exists($file);
+				if($result){
+					unlink($file);
+				}
+			}
+			
+			PesertaFiles::where(['user_id' => $req->userid])->delete();
+			Komentar::where('user_id',$req->userid)->orWhere('to_user',$req->userid)->delete();
+			Peserta::where('user_id',$req->userid)->delete();
+			User::where('id',$req->userid)->delete();
+			
+			$peserta = User::where(['role' => 'Peserta', 'kontingen_id' => Auth::user()->kontingen_id])->orderBy('kategori_id','ASC')->orderBy('jk','ASC')->orderBy('team','ASC')->get();
+		
+			$peserta = $peserta->map(function($f){
+				$random = Str::random(20);
+				$random2 = Str::random(20);
+				
+				if($f->pp() == 'NONE'){
+					$pp = asset('uploads/BerkasPeserta').'/defaultpp.png?t='.$random;
+				}else{
+					$pp = asset('uploads/BerkasPeserta').'/'.$f->id.'/'.$f->pp().'?t='.$random;
+				}
+				
+				$update = $f->peserta->updated_at ?? $f->update_at;
+				$map = [
+					'pp' => $pp,
+					'id' => $f->id,
+					'name' => $f->name,
+					'nik' => "$f->nomor_induk",
+					'tempat_lahir' => $f->tempat_lahir,
+					'tanggal_lahir' => Carbon::parse($f->tanggal_lahir)->translatedFormat('d F Y'),
+					'umur' => $f->umur(),
+					'cabang' => $f->cmtq->kategori ?? '-',
+					'golongan' => $f->gmtq->golongan ?? '-',
+					'jk' => $f->jk,
+					'teamstatus' => $f->gmtq->team,
+					'team' => $f->team,
+					'status' => $f->peserta->status ?? 1,
+					'update' => Carbon::parse($update)->translatedFormat('d F Y H:i'),
+				];
+				return $map;
+			});
+			
+			return response()->json([
+					'success' => true,
+					'message' => 'Peserta telah berhasil dihapus',
+					'data' => $peserta,
+			   ]);
+			}
 	}
 	
 	function addKomen(Request $req){
